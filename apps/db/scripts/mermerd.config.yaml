@@ -1,0 +1,13 @@
+schema:
+  - "publ"
+  # - "priv"
+useAllTables: true
+
+# Additional flags
+showAllConstraints: true
+outputFileName: "../../data/schema.mmd"
+# showDescriptions:
+#   - enumValues
+#   - columnComments
+showSchemaPrefix: true
+schemaPrefixSeparator: "."

@@ -1,0 +1,26 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "description": "Manage database migrations with graphile-worker",
+  "private": true,
+  "dependencies": {
+    "graphile-migrate": "2.0.0-rc.2",
+    "graphile-worker": "^0.16.6"
+  },
+  "devDependencies": {
+    "@grinn/eslint-config": "workspace:^0.2.0",
+    "@grinn/prettier-config": "workspace:^0.1.0"
+  },
+  "scripts": {
+    "gm": "pnpm graphile-migrate",
+    "dev": "pnpm gm watch",
+    "seed": "pnpm gm run ./migrations/seed.sql && node scripts/migrate-graphile-worker.js"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@grinn/eslint-config/base"
+    ]
+  },
+  "prettier": "@grinn/prettier-config"
+}

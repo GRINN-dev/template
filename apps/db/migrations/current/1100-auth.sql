@@ -1,0 +1,7 @@
+--!include auth/login.sql
+--!include auth/logout.sql
+--!include auth/forgot-password.sql
+--!include auth/reset-password.sql
+--!include auth/request-account-deletion.sql
+--!include auth/confirm-account-deletion.sql
+--!include auth/change-password.sql

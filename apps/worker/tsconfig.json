@@ -1,0 +1,4 @@
+{
+  "extends": "@grinn/tsconfig/base.json",
+  "include": ["src"]
+}

@@ -1,0 +1,32 @@
+{
+  "name": "workers",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsup-node src/index.ts",
+    "dev": "tsup-node src/index.ts --watch --onSuccess \"node dist/index.js\"",
+    "start": "node dist/index.js",
+    "install-db-schema": "pnpm gw --schema-only"
+  },
+  "dependencies": {
+    "@getbrevo/brevo": "2.2.0",
+    "graphile-worker": "^0.16.6",
+    "handlebars": "^4.7.8",
+    "puppeteer": "^22.12.1"
+  },
+  "devDependencies": {
+    "tsup": "^8.1.0",
+    "typescript": "^5.5.3",
+    "@grinn/eslint-config": "workspace:^0.2.0",
+    "@grinn/prettier-config": "workspace:^0.1.0",
+    "@grinn/tsconfig": "workspace:^0.1.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@grinn/eslint-config/base"
+    ]
+  },
+  "prettier": "@grinn/prettier-config"
+}

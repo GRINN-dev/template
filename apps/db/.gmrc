@@ -1,0 +1,32 @@
+{
+  "pgSettings": {
+    "search_path": "publ,priv,hidd,public"
+  },
+  "placeholders": {
+    ":DATABASE_VISITOR": "!ENV",
+    ":DATABASE_AUTHENTICATOR": "!ENV",
+    ":DATABASE_AUTHENTICATOR_PASSWORD": "!ENV"
+  },
+  "afterReset": [
+    "afterReset.sql",
+    {
+      "_": "command",
+      "command": "node scripts/migrate-graphile-worker.js"
+    }
+  ],
+  "afterAllMigrations": [
+    {
+      "_": "command",
+      "shadow": true,
+      "command": "if [ \"$IN_TESTS\" != \"1\" ]; then ./scripts/dump-db; fi"
+    }
+  ],
+  "afterCurrent": [
+    {
+      "_": "command",
+      "command": "./scripts/mermerd --runConfig ./scripts/mermerd.config.yaml -c $GM_DBURL"
+    }
+  ],
+  "blankMigrationContent": "-- Write your migration here\n-- available snippets are `table`, `enum`, `sqlfn`, `plpgsqlfn`.\n",
+  "//generatedWith": "1.4.1"
+}
