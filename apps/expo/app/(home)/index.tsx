@@ -1,5 +1,7 @@
 import { Image, Platform, StyleSheet } from "react-native";
 
+// import { graphql } from "@grinn/graphql";
+
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
@@ -49,7 +51,6 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app</ThemedText> to{" "}
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
-        <ThemedText>{}</ThemedText>
       </ThemedView>
     </ParallaxScrollView>
   );
@@ -73,3 +74,14 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
 });
+
+// const MyUsers = graphql(`
+//   query MyUsers {
+//     users {
+//       nodes {
+//         id
+//         name
+//       }
+//     }
+//   }
+// `);

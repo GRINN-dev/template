@@ -5,13 +5,26 @@ import {
   ApolloProvider,
   HttpLink,
   InMemoryCache,
+  useQuery,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
 import { getStoreItemAsync } from "@/src/utils/secure-store";
 
+// import { createPersistedQueryLink } from "@apollo/client/link/persisted-queries";
+// import { usePregeneratedHashes as withPregeneratedHashes } from "graphql-codegen-persisted-query-ids/lib/apollo";
+
+// import hashes from "@grinn/codegen/persisted-query-ids/client.json";
+
 ("use client");
+
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:8082";
+
+// const persistedLink = createPersistedQueryLink({
+//   useGETForHashedQueries: false,
+//   generateHash: withPregeneratedHashes(hashes),
+//   disable: () => false,
+// });
 
 async function getAccessToken() {
   return await getStoreItemAsync("access_token");
@@ -39,7 +52,7 @@ export function makeClient() {
         ...headers,
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      uri: apiUrl + "/graphql",
+      uri: "/graphql",
     };
   });
 
