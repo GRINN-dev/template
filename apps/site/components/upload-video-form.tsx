@@ -4,7 +4,7 @@
 // import { Upload } from "lucide-react";
 // import { useForm } from "react-hook-form";
 
-// import { graphql } from "@/graphql";
+// import { graphql } from "@grinn/graphql";
 // import client from "@/graphql/apollo-client";
 // import { Button } from "./ui/button";
 // import {
@@ -198,7 +198,8 @@ import { FileVideo, Upload, X } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
 
-import { graphql } from "@/graphql";
+import { graphql } from "@grinn/graphql";
+
 import client from "@/graphql/apollo-client";
 import { Button } from "./ui/button";
 import {

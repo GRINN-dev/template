@@ -1,4 +1,4 @@
-import { graphql } from "@/graphql";
+import { graphql } from "@grinn/graphql";
 
 export const updateProfileMutation = graphql(`
   mutation UpdateProfile($input: UpdateUserInput!) {

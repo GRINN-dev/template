@@ -1,4 +1,5 @@
-import { graphql } from "@/graphql";
+import { graphql } from "@grinn/graphql";
+
 import { query } from "@/graphql/apollo-client-ss";
 
 export default async function MaBibliothequePage() {
