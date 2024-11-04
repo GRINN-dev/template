@@ -164,6 +164,9 @@ importers:
       '@expo/vector-icons':
         specifier: ^14.0.2
         version: 14.0.4
+      '@grinn/graphql':
+        specifier: workspace:^0.1.0
+        version: link:../../tooling/graphql
       '@react-navigation/native':
         specifier: ^6.0.2
         version: 6.1.18(react-native@0.74.5)(react@18.2.0)
@@ -252,6 +255,9 @@ importers:
       '@apollo/experimental-nextjs-app-support':
         specifier: ^0.11.3
         version: 0.11.5(@apollo/client@3.11.8)(next@14.2.16)(react@18.3.1)
+      '@grinn/graphql':
+        specifier: workspace:^0.1.0
+        version: link:../../tooling/graphql
       '@hookform/resolvers':
         specifier: ^3.9.0
         version: 3.9.1(react-hook-form@7.53.1)
@@ -452,6 +458,19 @@ importers:
         version: 5.6.3
 
   tooling/github: {}
+
+  tooling/graphql:
+    dependencies:
+      gql.tada:
+        specifier: ^1.8.0
+        version: 1.8.10(graphql@16.9.0)(typescript@5.6.3)
+    devDependencies:
+      tsup:
+        specifier: ^8.1.0
+        version: 8.3.5(typescript@5.6.3)
+      typescript:
+        specifier: ^5.5.3
+        version: 5.6.3
 
   tooling/prettier:
     dependencies:
@@ -3216,7 +3235,7 @@ packages:
 
   /@expo/bunyan@4.0.1:
     resolution: {integrity: sha512-+Lla7nYSiHZirgK+U/uYzsLv/X+HaJienbD5AKX1UQZHYfWaP+9uuQluRB4GrEVWF0GZ7vEVp/jzaOT9k/SQlg==}
-    engines: {node: '>=0.10.0'}
+    engines: {'0': node >=0.10.0}
     dependencies:
       uuid: 8.3.2
     dev: false

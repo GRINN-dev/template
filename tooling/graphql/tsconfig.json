@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "plugins": [
+      {
+        "name": "next"
+      },
+      {
+        "name": "gql.tada/ts-plugin",
+        "schema": "../../data/schema.graphql",
+        "tadaOutputLocation": "./graphql-env.d.ts"
+      }
+    ],
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
