@@ -9,6 +9,7 @@ import {
 } from "@react-navigation/native";
 
 import "react-native-reanimated";
+import "../styles.css";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 

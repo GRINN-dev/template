@@ -9,7 +9,7 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
-import { getStoreItemAsync } from "@/src/utils/secure-store";
+import { getStoreItemAsync } from "@/utils/secure-store";
 
 // import { createPersistedQueryLink } from "@apollo/client/link/persisted-queries";
 // import { usePregeneratedHashes as withPregeneratedHashes } from "graphql-codegen-persisted-query-ids/lib/apollo";
