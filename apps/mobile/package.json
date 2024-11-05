@@ -70,12 +70,5 @@
       "expo-plugins/**"
     ]
   },
-  "prettier": "@grinn/prettier-config",
-  "autolinking": {
-    "ios": {
-      "exclude": [
-        "expo-keep-awake"
-      ]
-    }
-  }
+  "prettier": "@grinn/prettier-config"
 }
