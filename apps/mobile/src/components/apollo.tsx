@@ -5,7 +5,6 @@ import {
   ApolloProvider,
   HttpLink,
   InMemoryCache,
-  useQuery,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
@@ -69,6 +68,7 @@ export function makeClient() {
         fetchPolicy: "cache-first",
       },
     },
+
     link: ApolloLink.from([
       // ...(API_URL.includes("localhost") ? [] : [persistedLink]),
       authLink,
