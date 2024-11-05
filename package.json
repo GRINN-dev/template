@@ -29,7 +29,7 @@
     "@turbo/gen": "^1.12.5",
     "prettier": "^3.2.5",
     "turbo": "^1.12.5",
-    "typescript": "^5.4.2"
+    "typescript": "^5.6.3"
   },
   "prettier": "@grinn/prettier-config",
   "dependencies": {

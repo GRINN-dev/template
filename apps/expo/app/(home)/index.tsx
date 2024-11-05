@@ -1,6 +1,6 @@
 import { Image, Platform, StyleSheet } from "react-native";
 
-// import { graphql } from "@grinn/graphql";
+import { graphql } from "@grinn/graphql";
 
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
@@ -75,13 +75,13 @@ const styles = StyleSheet.create({
   },
 });
 
-// const MyUsers = graphql(`
-//   query MyUsers {
-//     users {
-//       nodes {
-//         id
-//         name
-//       }
-//     }
-//   }
-// `);
+const MyUsers = graphql(`
+  query MyUsers {
+    users {
+      nodes {
+        id
+        name
+      }
+    }
+  }
+`);
