@@ -17,7 +17,8 @@ import { getStoreItemAsync } from "@/utils/secure-store";
 
 ("use client");
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:8082";
+const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:8080";
+console.log("API_URL:", API_URL);
 
 // const persistedLink = createPersistedQueryLink({
 //   useGETForHashedQueries: false,
