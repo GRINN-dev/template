@@ -1,4 +1,5 @@
-import { Image, Platform, StyleSheet, Text } from "react-native";
+import { Button, Image, Platform, StyleSheet } from "react-native";
+import { router } from "expo-router";
 import { useQuery } from "@apollo/client";
 
 import { graphql } from "@grinn/graphql";
@@ -9,7 +10,17 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 
 export default function HomeScreen() {
-  const { data: usersData } = useQuery(MyUsers);
+  const {
+    data: usersData,
+    loading,
+    error,
+  } = useQuery(MyUsers, {
+    fetchPolicy: "network-only",
+  });
+
+  if (loading) console.log("Chargement...");
+  if (error) console.error("Erreur de requête:", error);
+  console.log(usersData);
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
@@ -53,9 +64,7 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app</ThemedText> to{" "}
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
-        {usersData?.users?.nodes.map((user, i) => (
-          <Text key={i}>{user?.username}</Text>
-        ))}
+        <Button title="Login" onPress={() => router.push("/(auth)/login")} />
       </ThemedView>
     </ParallaxScrollView>
   );
