@@ -7,6 +7,7 @@ import {
   Head,
   Heading,
   Html,
+  Img,
   Row,
   Section,
   Tailwind,
@@ -30,6 +31,15 @@ export const ResetPasswordExistingEmail = ({
       <Body>
         <Tailwind>
           <Container>
+            <Section>
+              <Img
+                src="/static/logo.png"
+                alt="logo"
+                width="100"
+                height="100"
+                className="my-2"
+              />
+            </Section>
             <Section>
               <Row>
                 <Column>
