@@ -20,7 +20,8 @@
     "typescript": "^5.5.3",
     "@grinn/eslint-config": "workspace:^0.2.0",
     "@grinn/prettier-config": "workspace:^0.1.0",
-    "@grinn/tsconfig": "workspace:^0.1.0"
+    "@grinn/tsconfig": "workspace:^0.1.0",
+    "@grinn/transactional": "transactional"
   },
   "eslintConfig": {
     "root": true,
