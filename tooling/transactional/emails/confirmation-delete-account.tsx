@@ -42,6 +42,7 @@ export const ConfirmationDeleteAccount = ({
                   </Text>
                   <Button
                     href={`${url}?token=${token}`}
+                    // TODO diriger vers page avec une troisieme etape de confirmation
                     className="rounded-full bg-black px-4 py-2 text-white"
                   >
                     Supprimer mon compte
