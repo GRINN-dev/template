@@ -6,27 +6,24 @@ import {
   Container,
   Head,
   Heading,
-  Hr,
   Html,
-  Img,
-  Link,
   Row,
   Section,
   Tailwind,
   Text,
 } from "@react-email/components";
 
-interface ResetPasswordEmailProps {
+interface ResetPasswordExistingEmailProps {
   username: string;
   url: string;
   token: string;
 }
 
-export const ResetPasswordEmail = ({
+export const ResetPasswordExistingEmail = ({
   username,
   url,
   token,
-}: ResetPasswordEmailProps) => {
+}: ResetPasswordExistingEmailProps) => {
   return (
     <Html>
       <Head />
@@ -63,4 +60,4 @@ export const ResetPasswordEmail = ({
   );
 };
 
-export default ResetPasswordEmail;
+export default ResetPasswordExistingEmail;
