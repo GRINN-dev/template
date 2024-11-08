@@ -7,7 +7,6 @@
   "scripts": {
     "build": "dotenv -e ./env/.env -- turbo build",
     "clean": "git clean -xdf node_modules",
-    "build:expo": "dotenv -e .env -- cd apps/expo && expo prebuild --clean expo run:ios",
     "clean:workspaces": "dotenv -e ./env/.env -- turbo clean",
     "dev": "dotenv -e ./env/.env -- turbo dev --parallel",
     "format": "dotenv -e ./env/.env -- turbo format --continue -- --cache --cache-location node_modules/.cache/.prettiercache",
@@ -22,14 +21,14 @@
     "workers:start": "dotenv -e ./env/.env -- pnpm --filter workers start",
     "migrate:prod": "dotenv -e ./env/.env.production -- pnpm --filter db gm migrate",
     "migrate:staging": "dotenv -e ./env/.env.staging -- pnpm --filter db gm migrate",
-    "expo": "dotenv -e ./env/.env -- pnpm --filter expo"
+    "mobile": "dotenv -e ./env/.env -- pnpm --filter mobile"
   },
   "devDependencies": {
     "@grinn/prettier-config": "workspace:^0.1.0",
     "@turbo/gen": "^1.12.5",
     "prettier": "^3.2.5",
     "turbo": "^1.12.5",
-    "typescript": "^5.4.2"
+    "typescript": "^5.6.3"
   },
   "prettier": "@grinn/prettier-config",
   "dependencies": {
