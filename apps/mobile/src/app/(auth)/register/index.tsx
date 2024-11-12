@@ -66,7 +66,7 @@ const Register = () => {
                   setEmail("");
                   setUsername("");
                   setPassword("");
-                  router.replace("/(home)");
+                  router.replace("/(auth)/onboarding");
                 });
             }}
           >
