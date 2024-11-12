@@ -26,7 +26,7 @@ const Register = () => {
           <TextInput
             keyboardType="default"
             onChangeText={(text) => setUsername(text)}
-            placeholder="Pseudonyme"
+            placeholder="Pseudo"
             autoCapitalize="none"
             style={styles.input}
           />

@@ -15,6 +15,7 @@ import z from "zod";
 import { graphql } from "@grinn/graphql";
 
 import { client } from "@/components/apollo";
+import { setStoreItemAsync } from "@/utils/secure-store";
 
 const Login = () => {
   const formSchema = z.object({
@@ -76,7 +77,15 @@ const Login = () => {
               .catch((error) => {
                 console.error(error);
               })
-              .then(() => {
+              .then(async (res) => {
+                if (!res) {
+                  console.error("Login failed");
+                  return;
+                }
+                await setStoreItemAsync(
+                  "access_token",
+                  res?.data?.login?.accessToken!,
+                );
                 console.log("Login success");
                 router.push("/(home)");
               });
