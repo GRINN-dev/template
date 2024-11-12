@@ -45,11 +45,7 @@ const Login = () => {
           name="username"
           rules={{ required: true }}
         />
-        {form.formState.errors.username && (
-          <Text>{form.formState.errors.username.message! as string}</Text>
-        )}
 
-        {/* <TextInput style={styles.input} secureTextEntry {...form.register('password')} /> */}
         <Controller
           control={form.control}
           render={({ field: { onChange, onBlur, value } }) => (
@@ -57,7 +53,6 @@ const Login = () => {
               onBlur={onBlur}
               onChangeText={(value) => onChange(value)}
               value={value}
-              // secureTextEntry={!isPasswordVisible}
               placeholder="Mot de passe"
               keyboardType="visible-password"
               autoCapitalize="none"
@@ -87,7 +82,7 @@ const Login = () => {
               });
           }}
         >
-          <Text style={styles.buttonText}>Login </Text>
+          <Text style={styles.buttonText}>Valider </Text>
         </Pressable>
 
         <Text>
