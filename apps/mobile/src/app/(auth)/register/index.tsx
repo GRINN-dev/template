@@ -73,7 +73,7 @@ const Register = () => {
             <Text style={styles.buttonText}>Valider</Text>
           </Pressable>
           <View className="flex flex-col items-start justify-start gap-4">
-            <Text>Vous n&apos;avez pas de compte ? </Text>
+            <Text>Vous avez un compte ? </Text>
             <Link href={{ pathname: "/(auth)/login" }} className="underline">
               Connectez-vous
             </Link>
