@@ -1,5 +1,7 @@
 import { Text } from "react-native";
 
+import Step1OnboardingWelcome from "./step-1-onboarding-welcome";
+
 interface OnboardingStep {
   order: number;
   description: string;
@@ -9,7 +11,7 @@ export const onboardingSteps: OnboardingStep[] = [
   {
     order: 1,
     description: "Onboarding welcome",
-    component: <Text>Onboarding welcome</Text>,
+    component: <Step1OnboardingWelcome />,
   },
   {
     order: 2,
