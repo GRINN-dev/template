@@ -68,6 +68,14 @@ export default function HomeScreen() {
        
       </ThemedView> */}
       <Button title="Login" onPress={() => router.push("/(auth)/login")} />
+      <Button
+        title="Register"
+        onPress={() => router.push("/(auth)/register")}
+      />
+      <Button
+        title="Onboarding"
+        onPress={() => router.push("/(auth)/onboarding")}
+      />
     </ParallaxScrollView>
   );
 }
