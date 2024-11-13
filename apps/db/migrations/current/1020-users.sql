@@ -13,12 +13,23 @@ create table publ.users (
   username citext not null unique check(length(username) >= 2 and length(username) <= 24 and username ~ '^[a-zA-Z]([_]?[a-zA-Z0-9])+$'),
   name text,
   avatar_url text check(avatar_url ~ '^https?://[^/]+'),
+  birthday date,
+  phone_number varchar(20),
   is_admin boolean not null default false,
   is_verified boolean not null default false,
+  has_finished_onboarding boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 alter table publ.users enable row level security;
+
+create index on publ.users (username);
+create index on publ.users (is_admin);
+create index on publ.users (is_verified);
+create index on publ.users (birthday);
+create index on publ.users (phone_number);
+create index on publ.users (has_finished_onboarding);
+
 
 -- We couldn't implement this relationship on the sessions table until the users table existed!
 alter table priv.sessions
@@ -31,8 +42,9 @@ create policy select_all on publ.users for select using (true);
 create policy update_self on publ.users for update using (id = publ.current_user_id());
 grant select on publ.users to :DATABASE_VISITOR;
 -- NOTE: `insert` is not granted, because we'll handle that separately
-grant update(username, name, avatar_url) on publ.users to :DATABASE_VISITOR;
+grant update(username, name, avatar_url, birthday, phone_number, has_finished_onboarding) on publ.users to :DATABASE_VISITOR;
 -- NOTE: `delete` is not granted, because we require confirmation via request_account_deletion/confirm_account_deletion
+grant insert (username, name, avatar_url, birthday, phone_number) on publ.users to :DATABASE_VISITOR;
 
 comment on table publ.users is
   E'A user who can log in to the application.';

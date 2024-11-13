@@ -20,6 +20,7 @@ export default function HomeScreen() {
 
   if (loading) console.log("Chargement...");
   if (error) console.error("Erreur de requête:", error);
+  console.log("currentUser", currentUser?.currentUser?.username);
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
