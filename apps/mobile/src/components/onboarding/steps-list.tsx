@@ -1,6 +1,6 @@
 import { Text } from "react-native";
 
-import Step1OnboardingWelcome from "./step-1-onboarding-welcome";
+import Step1OnboardingWelcome from "./step-screens/step-1-onboarding-welcome";
 
 interface OnboardingStep {
   order: number;

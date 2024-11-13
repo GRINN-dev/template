@@ -4,7 +4,7 @@ import OnboardingStepper from "@/components/onboarding/stepper";
 
 const Onboarding = () => {
   return (
-    <View>
+    <View className="flex-1 bg-pink-100">
       <OnboardingStepper />
     </View>
   );
