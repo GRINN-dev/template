@@ -1836,6 +1836,7 @@ input UserInput {
   avatarUrl: String
   birthday: Date
   phoneNumber: String
+  hasFinishedOnboarding: Boolean
 }
 
 """The output of our update `Video` mutation."""

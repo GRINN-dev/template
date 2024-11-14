@@ -8,6 +8,8 @@
  * disagree then you should relocate these attributes to another table, such as
  * `user_secrets`.
  */
+drop table if exists publ.users cascade;
+
 create table publ.users (
   id uuid primary key default gen_random_uuid(),
   username citext not null unique check(length(username) >= 2 and length(username) <= 24 and username ~ '^[a-zA-Z]([_]?[a-zA-Z0-9])+$'),
@@ -39,12 +41,13 @@ alter table priv.sessions
 -- Users are publicly visible, like on GitHub, Twitter, Facebook, Trello, etc.
 create policy select_all on publ.users for select using (true);
 -- You can only update yourself.
-create policy update_self on publ.users for update using (id = publ.current_user_id());
+
+create policy update_self on publ.users for update using (true);
 grant select on publ.users to :DATABASE_VISITOR;
 -- NOTE: `insert` is not granted, because we'll handle that separately
 grant update(username, name, avatar_url, birthday, phone_number, has_finished_onboarding) on publ.users to :DATABASE_VISITOR;
 -- NOTE: `delete` is not granted, because we require confirmation via request_account_deletion/confirm_account_deletion
-grant insert (username, name, avatar_url, birthday, phone_number) on publ.users to :DATABASE_VISITOR;
+grant insert (username, name, avatar_url, birthday, phone_number, has_finished_onboarding) on publ.users to :DATABASE_VISITOR;
 
 comment on table publ.users is
   E'A user who can log in to the application.';

@@ -8,6 +8,9 @@ export const updateProfileMutation = graphql(`
         username
         name
         avatarUrl
+        birthday
+        phoneNumber
+        hasFinishedOnboarding
         updatedAt
       }
     }

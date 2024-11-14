@@ -1,9 +1,5 @@
 import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
-import { useQuery } from "@apollo/client";
 
-import { graphql } from "@grinn/graphql";
-
-import { client } from "../apollo";
 import BottomButtonStepper from "./bottom-button-stepper";
 import { useOnboardingStore } from "./onboarding-store";
 import { onboardingSteps } from "./steps-list";
@@ -14,49 +10,11 @@ interface OnboardingStepperProps {
 
 const OnboardingStepper = (props: OnboardingStepperProps) => {
   const onboardingStore = useOnboardingStore();
-  const {
-    data: currentUser,
-    loading,
-    //  error,
-  } = useQuery(CurrentUser, {
-    fetchPolicy: "network-only",
-  });
 
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
-
-  const handleUpdateUser = async () => {
-    if (onboardingStore?.step === 2) {
-      await client.mutate({
-        mutation: UpdateUser,
-        variables: {
-          input: {
-            id: currentUser?.currentUser?.id,
-            patch: {
-              username: "test",
-            },
-          },
-        },
-      });
-    } else if (onboardingStore?.step === 3) {
-      await client.mutate({
-        mutation: UpdateUser,
-        variables: {
-          input: {
-            id: currentUser?.currentUser?.id,
-            patch: {
-              username: "test",
-            },
-          },
-        },
-      });
-    }
-  };
   return (
     <SafeAreaView className="m-4 flex-1">
       <ScrollView className="relative">
-        <View className="flex-row items-center justify-between">
+        <View className="flex-row items-center justify-between py-4">
           <Pressable
             onPress={() => {
               onboardingStore.previousStep();
@@ -74,7 +32,7 @@ const OnboardingStepper = (props: OnboardingStepperProps) => {
             <Text>Next</Text>
           </Pressable>
         </View>
-        <View className="flex-1 bg-yellow-100 px-4">
+        <View className="flex-1 bg-yellow-100 p-4">
           {
             onboardingSteps.find((step) => step.order === onboardingStore.step)
               ?.component
@@ -84,7 +42,7 @@ const OnboardingStepper = (props: OnboardingStepperProps) => {
           <BottomButtonStepper
             title="Continuer"
             onPress={() => {
-              handleUpdateUser();
+              onboardingStore.nextStep();
             }}
             isFixed={false}
           />
@@ -94,7 +52,7 @@ const OnboardingStepper = (props: OnboardingStepperProps) => {
         <BottomButtonStepper
           title="Continuer"
           onPress={() => {
-            handleUpdateUser();
+            onboardingStore.nextStep();
           }}
           isFixed={false}
         />
@@ -102,25 +60,5 @@ const OnboardingStepper = (props: OnboardingStepperProps) => {
     </SafeAreaView>
   );
 };
-const CurrentUser = graphql(`
-  query currentUser {
-    currentUser {
-      id
-      username
-    }
-  }
-`);
-
-const UpdateUser = graphql(`
-  mutation UpdateUser($input: UpdateUserInput!) {
-    updateUser(input: $input) {
-      user {
-        id
-        username
-      }
-      clientMutationId
-    }
-  }
-`);
 
 export default OnboardingStepper;
