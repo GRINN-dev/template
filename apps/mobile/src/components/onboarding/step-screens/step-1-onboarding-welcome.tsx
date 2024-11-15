@@ -1,45 +1,84 @@
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
-const Step1OnboardingWelcome = () => {
+import BottomButtonStepper from "@/components/onboarding/bottom-button-stepper";
+import { useOnboardingStore } from "@/components/onboarding/onboarding-store";
+
+interface OnboardingStepperProps {
+  buttonIsFixed: boolean;
+}
+const Step1OnboardingWelcome = ({
+  props,
+}: {
+  props: OnboardingStepperProps;
+}) => {
+  const onboardingStore = useOnboardingStore();
+
   return (
     <>
-      <View className="flex flex-col items-center justify-center gap-2 px-4 py-6">
-        <Text className="text-center text-2xl">Bienvenue !</Text>
-        <Text className="">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure, rerum
-          unde... Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-          Iure, rerum unde...Lorem ipsum, dolor sit amet consectetur adipisicing
-          elit. Iure, rerum unde...Lorem ipsum, dolor sit amet consectetur
-          adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor sit amet
-          consectetur adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor
-          sit amet consectetur adipisicing elit. Iure, rerum unde...Lorem ipsum,
-          dolor sit amet consectetur adipisicing elit. Iure, rerum unde... Lorem
-          ipsum, dolor sit amet consectetur adipisicing elit. Iure, rerum
-          unde... Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-          Iure, rerum unde...Lorem ipsum, dolor sit amet consectetur adipisicing
-          elit. Iure, rerum unde...Lorem ipsum, dolor sit amet consectetur
-          adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor sit amet
-          consectetur adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor
-          sit amet consectetur adipisicing elit. Iure, rerum unde...Lorem ipsum,
-          dolor sit amet consectetur adipisicing elit. Iure, rerum unde... Lorem
-          ipsum, dolor sit amet consectetur adipisicing elit. Iure, rerum
-          unde... Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-          Iure, rerum unde...Lorem ipsum, dolor sit amet consectetur adipisicing
-          elit. Iure, rerum unde...Lorem ipsum, dolor sit amet consectetur
-          adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor sit amet
-          consectetur adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor
-          sit amet consectetur adipisicing elit. Iure, rerum unde...Lorem ipsum,
-          dolor sit amet consectetur adipisicing elit. Iure, rerum unde... Lorem
-          ipsum, dolor sit amet consectetur adipisicing elit. Iure, rerum
-          unde... Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-          Iure, rerum unde...Lorem ipsum, dolor sit amet consectetur adipisicing
-          elit. Iure, rerum unde...Lorem ipsum, dolor sit amet consectetur
-          adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor sit amet
-          consectetur adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor
-          sit amet consectetur adipisicing elit. Iure, rerum unde...Lorem ipsum,
-          dolor sit amet consectetur adipisicing elit. Iure, rerum unde...
-        </Text>
-      </View>
+      <ScrollView>
+        <View className="flex flex-col items-center justify-center gap-2 px-4 py-6">
+          <Text>Bienvenue !</Text>
+          <Text>
+            rem ipsum, dolor sit amet consectetur adipisicing elit. Iure, rerum
+            unde... Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+            Iure, rerum unde...Lorem ipsum, dolor sit amet consectetur
+            adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor sit amet
+            consectetur adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor
+            sit amet consectetur adipisicing elit. Iure, rerum unde...Lorem
+            ipsum, dolor sit amet consectetur adipisicing elit. Iure, rerum
+            unde...Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+            Iure, rerum unde... Lorem ipsum, dolor sit amet consectetur
+            adipisicing elit. Iure, rerum unde... Lorem ipsum, dolor sit amet
+            consectetur adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor
+            sit amet consectetur adipisicing elit. Iure, rerum unde...Lorem
+            ipsum, dolor sit amet consectetur adipisicing elit. Iure, rerum
+            unde...Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+            Iure, rerum unde...Lorem ipsum, dolor sit amet consectetur
+            adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor sit amet
+            consectetur adipisicing elit. Iure, rerum unde... Lorem ipsum, dolor
+            sit amet consectetur adipisicing elit. Iure, rerum unde... Lorem
+            ipsum, dolor sit amet consectetur adipisicing elit. Iure, rerum
+            unde...Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+            Iure, rerum unde...Lorem ipsum, dolor sit amet consectetur
+            adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor sit amet
+            consectetur adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor
+            sit amet consectetur adipisicing elit. Iure, rerum unde...Lorem
+            ipsum, dolor sit amet consectetur adipisicing elit. Iure, rerum
+            unde... Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+            Iure, rerum unde... Lorem ipsum, dolor sit amet consectetur
+            adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor sit amet
+            consectetur adipisicing elit. Iure, rerum unde...Lorem ipsum, dolor
+            sit amet consectetur adipisicing elit. Iure, rerum unde...Lorem
+            ipsum, dolor sit amet consectetur adipisicing elit. Iure, rerum
+            unde...Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+            Iure, rerum unde...Lorem ipsum, dolor sit amet consectetur
+            adipisicing elit. Iure, rerum unde... Lorem ipsum, dolor sit amet
+            consectetur adipisicing elit. Iure, rerum unde... Lorem ipsum, dolor
+            sit amet consectetur adipisicing elit.
+          </Text>
+          {!props?.buttonIsFixed && (
+            <BottomButtonStepper
+              title="Continuer"
+              onPress={() => {
+                // onboardingSteps
+                //   .find((step) => step.order === onboardingStore.step)
+                //   ?.onValidate?.(currentUser?.currentUser?.id, {});
+                onboardingStore.nextStep();
+              }}
+              isFixed={false}
+            />
+          )}
+        </View>
+      </ScrollView>
+      {props?.buttonIsFixed && (
+        <BottomButtonStepper
+          title="Continuer"
+          onPress={() => {
+            onboardingStore.nextStep();
+          }}
+          isFixed={true}
+        />
+      )}
     </>
   );
 };

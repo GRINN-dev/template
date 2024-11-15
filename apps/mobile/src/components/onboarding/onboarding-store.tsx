@@ -1,7 +1,12 @@
 import { router } from "expo-router";
 import { create } from "zustand";
 
+// import { graphql } from "@grinn/graphql";
+
+// import { client } from "../apollo";
 import { onboardingSteps } from "./steps-list";
+
+// import { useQuery } from "@apollo/client";
 
 const initialState = {
   step: 1,
@@ -34,3 +39,20 @@ export const useOnboardingStore = create<{
       return { step: state?.step - 1 };
     }),
 }));
+
+// const UpdateUser = graphql(`
+//   mutation updateUser($id: UUID!, $patch: UserPatch = {}) {
+//     updateUser(input: { id: $id, patch: $patch }) {
+//       clientMutationId
+//     }
+//   }
+// `);
+
+// const CurrentUser = graphql(`
+//   query currentUser {
+//     currentUser {
+//       id
+//       username
+//     }
+//   }
+// `);

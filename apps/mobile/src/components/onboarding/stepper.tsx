@@ -1,8 +1,12 @@
 import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 
+// import { graphql } from "@grinn/graphql";
+
 import BottomButtonStepper from "./bottom-button-stepper";
 import { useOnboardingStore } from "./onboarding-store";
 import { onboardingSteps } from "./steps-list";
+
+// import { useQuery } from "@apollo/client";
 
 interface OnboardingStepperProps {
   buttonIsFixed: boolean;
@@ -10,10 +14,13 @@ interface OnboardingStepperProps {
 
 const OnboardingStepper = (props: OnboardingStepperProps) => {
   const onboardingStore = useOnboardingStore();
+  // const { data: currentUser } = useQuery(CurrentUser, {
+  //   fetchPolicy: "network-only",
+  // });
 
   return (
     <SafeAreaView className="m-4 flex-1">
-      <ScrollView className="relative">
+      <View className="relative flex-1">
         <View className="flex-row items-center justify-between py-4">
           <Pressable
             onPress={() => {
@@ -38,10 +45,13 @@ const OnboardingStepper = (props: OnboardingStepperProps) => {
               ?.component
           }
         </View>
-        {!props.buttonIsFixed && (
+        {/* {!props.buttonIsFixed && (
           <BottomButtonStepper
             title="Continuer"
             onPress={() => {
+              // onboardingSteps
+              //   .find((step) => step.order === onboardingStore.step)
+              //   ?.onValidate?.(currentUser?.currentUser?.id, {});
               onboardingStore.nextStep();
             }}
             isFixed={false}
@@ -56,9 +66,18 @@ const OnboardingStepper = (props: OnboardingStepperProps) => {
           }}
           isFixed={false}
         />
-      )}
+      )} */}
+      </View>
     </SafeAreaView>
   );
 };
 
+// const CurrentUser = graphql(`
+//   query currentUser {
+//     currentUser {
+//       id
+//       username
+//     }
+//   }
+// `);
 export default OnboardingStepper;

@@ -1,5 +1,7 @@
 import { Text } from "react-native";
 
+// import { graphql } from "@grinn/graphql";
+// import { client } from "@/components/apollo";
 import Step1OnboardingWelcome from "./step-screens/step-1-onboarding-welcome";
 import Step2OnboardingBirthdate from "./step-screens/step-2-onboarding-birthdate";
 import Step3PhoneNumber from "./step-screens/step-3-onboarding-phone";
@@ -9,16 +11,31 @@ interface OnboardingStep {
   description: string;
   component: JSX.Element;
 }
+
 export const onboardingSteps: OnboardingStep[] = [
   {
     order: 1,
     description: "Onboarding welcome",
-    component: <Step1OnboardingWelcome />,
+    component: <Step1OnboardingWelcome props={{ buttonIsFixed: true }} />,
   },
   {
     order: 2,
     description: "Date of birth",
     component: <Step2OnboardingBirthdate />,
+    // onValidate: async (
+    //   currentUserId: string,
+    //   userPatch: { birthdate: Date },
+    // ) => {
+    //   await client.mutate({
+    //     mutation: UpdateUser,
+    //     variables: {
+    //       id: currentUserId,
+    //       patch: {
+    //         birthday: userPatch.birthdate,
+    //       },
+    //     },
+    //   });
+    // },
   },
   {
     order: 3,
@@ -47,3 +64,11 @@ export const onboardingSteps: OnboardingStep[] = [
     component: <Text>Congratulations</Text>,
   },
 ];
+
+// const UpdateUser = graphql(`
+//   mutation updateUser($id: UUID!, $patch: UserPatch = {}) {
+//     updateUser(input: { id: $id, patch: $patch }) {
+//       clientMutationId
+//     }
+//   }
+// `);

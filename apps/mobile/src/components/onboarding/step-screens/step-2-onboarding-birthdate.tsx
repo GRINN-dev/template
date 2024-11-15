@@ -5,6 +5,7 @@ import { useQuery } from "@apollo/client";
 import { graphql } from "@grinn/graphql";
 
 import { client } from "@/components/apollo";
+import BottomButtonStepper from "@/components/onboarding/bottom-button-stepper";
 
 const Step2OnboardingBirthdate = ({
   onValidate,
@@ -23,14 +24,16 @@ const Step2OnboardingBirthdate = ({
       variables: {
         id: currentUser?.currentUser?.id,
         patch: {
-          birthdate: birthdate,
+          birthday: birthdate,
         },
       },
     });
-    onValidate?.(birthdate);
   };
 
   //TODO props à passer dans le parent pour valider le stepView>
+
+  return (
+    <View>
       <Text>Date de naissance</Text>
       <TextInput
         className="mb-6 mt-16 h-12 w-full rounded bg-white p-2"
