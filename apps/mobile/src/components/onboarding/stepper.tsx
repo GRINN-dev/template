@@ -1,18 +1,13 @@
-import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Pressable, SafeAreaView, Text, View } from "react-native";
 
 // import { graphql } from "@grinn/graphql";
 
-import BottomButtonStepper from "./bottom-button-stepper";
 import { useOnboardingStore } from "./onboarding-store";
 import { onboardingSteps } from "./steps-list";
 
 // import { useQuery } from "@apollo/client";
 
-interface OnboardingStepperProps {
-  buttonIsFixed: boolean;
-}
-
-const OnboardingStepper = (props: OnboardingStepperProps) => {
+const OnboardingStepper = () => {
   const onboardingStore = useOnboardingStore();
   // const { data: currentUser } = useQuery(CurrentUser, {
   //   fetchPolicy: "network-only",

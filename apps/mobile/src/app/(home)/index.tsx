@@ -4,10 +4,12 @@ import { useQuery } from "@apollo/client";
 
 import { graphql } from "@grinn/graphql";
 
+import { client } from "@/components/apollo";
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { deleteStoreItemAsync } from "@/utils/secure-store";
 
 export default function HomeScreen() {
   const {
@@ -17,6 +19,16 @@ export default function HomeScreen() {
   } = useQuery(CurrentUser, {
     fetchPolicy: "network-only",
   });
+
+  const delCacheAndGoLogin = async () => {
+    await client.mutate({ mutation: Logout }).catch((error) => {
+      console.error("Erreur de mutation:", error);
+    });
+    await deleteStoreItemAsync("access_token");
+    await deleteStoreItemAsync("refresh_token");
+    client.clearStore();
+    router.replace("/(auth)/login");
+  };
 
   if (loading) console.log("Chargement...");
   if (error) console.error("Erreur de requête:", error);
@@ -77,6 +89,7 @@ export default function HomeScreen() {
         title="Onboarding"
         onPress={() => router.push("/(auth)/onboarding")}
       />
+      <Button title="logout" onPress={delCacheAndGoLogin} />
     </ParallaxScrollView>
   );
 }
@@ -104,6 +117,14 @@ const CurrentUser = graphql(`
     currentUser {
       id
       username
+    }
+  }
+`);
+
+const Logout = graphql(`
+  mutation logout {
+    logout {
+      success
     }
   }
 `);

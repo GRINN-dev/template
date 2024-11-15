@@ -60,9 +60,6 @@ const Step1OnboardingWelcome = ({
             <BottomButtonStepper
               title="Continuer"
               onPress={() => {
-                // onboardingSteps
-                //   .find((step) => step.order === onboardingStore.step)
-                //   ?.onValidate?.(currentUser?.currentUser?.id, {});
                 onboardingStore.nextStep();
               }}
               isFixed={false}

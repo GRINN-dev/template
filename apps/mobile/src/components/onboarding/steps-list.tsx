@@ -21,7 +21,7 @@ export const onboardingSteps: OnboardingStep[] = [
   {
     order: 2,
     description: "Date of birth",
-    component: <Step2OnboardingBirthdate />,
+    component: <Step2OnboardingBirthdate props={{ buttonIsFixed: true }} />,
     // onValidate: async (
     //   currentUserId: string,
     //   userPatch: { birthdate: Date },
@@ -40,7 +40,13 @@ export const onboardingSteps: OnboardingStep[] = [
   {
     order: 3,
     description: "Phone number",
-    component: <Step3PhoneNumber />,
+    component: (
+      <Step3PhoneNumber
+        props={{
+          buttonIsFixed: true,
+        }}
+      />
+    ),
   },
   {
     order: 4,
