@@ -25,8 +25,11 @@ export default function HomeScreen() {
       console.error("Erreur de mutation:", error);
     });
     await deleteStoreItemAsync("access_token");
+    console.log("access_token deleted");
     await deleteStoreItemAsync("refresh_token");
+    console.log("refresh_token deleted");
     client.clearStore();
+    console.log("store cleared");
     router.replace("/(auth)/login");
   };
 
