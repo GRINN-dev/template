@@ -5,6 +5,7 @@ import { Text } from "react-native";
 import Step1OnboardingWelcome from "./step-screens/step-1-onboarding-welcome";
 import Step2OnboardingBirthdate from "./step-screens/step-2-onboarding-birthdate";
 import Step3PhoneNumber from "./step-screens/step-3-onboarding-phone";
+import Step4OnboardingVerifyCode from "./step-screens/step-4-onboarding-verify-code";
 
 interface OnboardingStep {
   order: number;
@@ -51,7 +52,13 @@ export const onboardingSteps: OnboardingStep[] = [
   {
     order: 4,
     description: "Phone verification code",
-    component: <Text>Phone verification code</Text>,
+    component: (
+      <Step4OnboardingVerifyCode
+        props={{
+          buttonIsFixed: true,
+        }}
+      />
+    ),
   },
 
   {
