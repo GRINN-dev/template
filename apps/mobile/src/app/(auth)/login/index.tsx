@@ -8,6 +8,8 @@ import {
   TextInput,
 } from "react-native";
 import { Link, router } from "expo-router";
+import * as SecureStore from "expo-secure-store";
+import { useQuery } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
@@ -15,17 +17,26 @@ import z from "zod";
 import { graphql } from "@grinn/graphql";
 
 import { client } from "@/components/apollo";
-import { setStoreItemAsync } from "@/utils/secure-store";
 
 const Login = () => {
   const formSchema = z.object({
-    username: z.string(),
+    email: z.string(),
     password: z.string().min(8),
   });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
+  const {
+    data: currentUser,
+    loading,
+    refetch,
+    error,
+  } = useQuery(CurrentUser, {
+    fetchPolicy: "network-only",
+  });
+
+  console.log(currentUser, error, "currentUserLoginScreen");
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <SafeAreaView>
@@ -35,15 +46,15 @@ const Login = () => {
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
               onBlur={onBlur}
-              keyboardType="default"
+              keyboardType="email-address"
               onChangeText={(value) => onChange(value)}
               value={value}
-              placeholder="Pseudonyme"
+              placeholder="Email"
               autoCapitalize="none"
               style={styles.input}
             />
           )}
-          name="username"
+          name="email"
           rules={{ required: true }}
         />
 
@@ -65,31 +76,37 @@ const Login = () => {
 
         <Pressable
           style={styles.button}
-          onPress={async () => {
+          onPress={form.handleSubmit(async (data) => {
             await client
               .mutate({
                 mutation: loginMutation,
                 variables: {
-                  username: form.getValues("username"),
-                  password: form.getValues("password"),
+                  username: data.email,
+                  password: data.password,
                 },
               })
-              .catch((error) => {
-                console.error(error);
-              })
               .then(async (res) => {
-                if (!res) {
-                  console.error("Login failed");
+                if (!res.data?.login?.accessToken) {
+                  console.log("no access token");
                   return;
                 }
-                await setStoreItemAsync(
+
+                await SecureStore.setItemAsync(
                   "access_token",
-                  res?.data?.login?.accessToken!,
-                );
-                console.log("Login success");
-                router.push("/(home)");
+                  res.data?.login?.accessToken,
+                ),
+                  await SecureStore.setItemAsync(
+                    "refresh_token",
+                    res.data?.login?.accessToken,
+                  ),
+                  await refetch({});
+
+                router.replace("/(home)");
+              })
+              .catch((err) => {
+                console.log(err.message, "goodbye");
               });
-          }}
+          })}
         >
           <Text style={styles.buttonText}>Valider </Text>
         </Pressable>
@@ -161,3 +178,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
+const CurrentUser = graphql(`
+  query currentUser {
+    currentUser {
+      id
+      username
+    }
+  }
+`);

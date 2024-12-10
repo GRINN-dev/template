@@ -31,6 +31,7 @@ const Step2OnboardingBirthdate = ({
     await client
       .mutate({
         mutation: UpdateUser,
+
         variables: {
           id: currentUser?.currentUser?.id,
           patch: {

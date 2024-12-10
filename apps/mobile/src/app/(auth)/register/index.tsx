@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import {
   Pressable,
@@ -9,15 +10,72 @@ import {
   View,
 } from "react-native";
 import { Link, router } from "expo-router";
+import * as SecureStore from "expo-secure-store";
+import { useQuery } from "@apollo/client";
 
 import { graphql } from "@grinn/graphql";
 
 import { client } from "@/components/apollo";
 
 const Register = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { data: currentUser, error } = useQuery(CurrentUser, {
+    fetchPolicy: "network-only",
+    onCompleted: (data) => {
+      if (!data.currentUser) {
+        router.replace("/(auth)/login");
+      }
+    },
+    onError: (e) => {
+      console.log("Erreur lors de la récupération de l'utilisateur :", e);
+    },
+  });
+  console.log(currentUser, error, "currentUserLoginScreen");
+  async function onboard() {
+    if (isLoading) return;
+    setIsLoading(true);
+    try {
+      await client
+        .mutate({
+          mutation: registerMutation,
+          variables: {
+            input: {
+              username: email,
+              email: email,
+              password: password,
+            },
+          },
+        })
+        .then(async ({ data }) => {
+          data?.register?.accessToken &&
+            (await SecureStore.setItemAsync(
+              "access_token",
+              data?.register?.accessToken,
+            ));
+          data?.register?.refreshToken &&
+            (await SecureStore.setItemAsync(
+              "refresh_token",
+              data?.register?.refreshToken,
+            ));
+          return data?.register?.user?.id;
+        })
+        .then(() => {
+          router.push("/(home)");
+        })
+        .catch((e) => {
+          console.log(e);
+          router.push("/");
+        });
+    } catch (e) {
+      console.log(e);
+      router.push("/");
+    }
+    setIsLoading(false);
+  }
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <SafeAreaView className="w-full">
@@ -46,28 +104,8 @@ const Register = () => {
           />
           <Pressable
             style={styles.button}
-            onPress={async () => {
-              await client
-                .mutate({
-                  mutation: registerMutation,
-                  variables: {
-                    input: {
-                      username: username,
-                      email: email,
-                      password: password,
-                    },
-                  },
-                })
-                .catch((error) => {
-                  console.error(error);
-                })
-                .then(() => {
-                  console.log("Register success");
-                  setEmail("");
-                  setUsername("");
-                  setPassword("");
-                  router.replace("/(auth)/onboarding");
-                });
+            onPress={() => {
+              onboard();
             }}
           >
             <Text style={styles.buttonText}>Valider</Text>
@@ -89,6 +127,8 @@ export default Register;
 const registerMutation = graphql(`
   mutation Register($input: RegisterInput!) {
     register(input: $input) {
+      accessToken
+      refreshToken
       user {
         id
         username
@@ -96,7 +136,14 @@ const registerMutation = graphql(`
     }
   }
 `);
-
+const CurrentUser = graphql(`
+  query currentUser {
+    currentUser {
+      id
+      username
+    }
+  }
+`);
 const styles = StyleSheet.create({
   container: {
     justifyContent: "space-between",

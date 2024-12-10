@@ -18,6 +18,11 @@ export default function HomeScreen() {
     error,
   } = useQuery(CurrentUser, {
     fetchPolicy: "network-only",
+    onCompleted: (data) => {
+      if (!data.currentUser) {
+        router.replace("/(auth)/login");
+      }
+    },
   });
 
   const delCacheAndGoLogin = async () => {
