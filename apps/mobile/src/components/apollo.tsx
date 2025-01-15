@@ -7,6 +7,7 @@ import {
   InMemoryCache,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { onError } from "@apollo/client/link/error";
 
 import { getStoreItemAsync } from "@/utils/secure-store";
 
@@ -53,6 +54,27 @@ export function makeClient() {
     };
   });
 
+  const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
+    if (graphQLErrors) {
+      console.error(
+        `[GraphQL error]: Operation: ${operation.operationName}, Query: ${
+          operation.query.loc?.source.body
+        }, Variables: ${JSON.stringify(operation.variables)}`,
+      );
+      graphQLErrors.forEach(({ message, locations, path }) =>
+        console.error(
+          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+        ),
+      );
+    }
+
+    if (networkError) {
+      console.error(
+        `[Network error]: ${networkError}, Operation: ${operation.operationName}`,
+      );
+    }
+  });
+
   const httpLink = new HttpLink({
     uri: apiUrl + "/graphql",
     credentials: "include",
@@ -69,6 +91,7 @@ export function makeClient() {
 
     link: ApolloLink.from([
       // ...(API_URL.includes("localhost") ? [] : [persistedLink]),
+      ...(process.env.NODE_ENV !== "production" ? [errorLink] : []),
       authLink,
       httpLink,
     ]),
