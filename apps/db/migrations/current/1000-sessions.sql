@@ -32,7 +32,9 @@ create table priv.sessions (
   -- You could add access restriction columns here if you want, e.g. for OAuth scopes.
   created_at timestamptz not null default now(),
   refresh_count integer not null default 0,
-  last_refresh timestamptz not null default now()
+  last_refresh timestamptz not null default now(),
+  ip_address inet,
+  user_agent text
 );
 alter table priv.sessions enable row level security;
 

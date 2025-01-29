@@ -28,29 +28,6 @@
         },
         "description": "A user who can log in to the application.",
       },
-      "publ.user_emails": {
-        "tags": {
-          /*
-           * `@omit all` because there's no point exposing `allUserEmails` -
-           * you can only see your own, and having this behaviour can lead to
-           * bad practices from frontend teams.
-           */
-          "omit": "all",
-        },
-        "constraint": {
-          "user_emails_pkey": {
-            "tags": {
-              "omit": "all",
-            },
-          },
-          "user_emails_user_id_email_key": {
-            "tags": {
-              // We don't need custom finders/relations for this
-              "omit": true,
-            },
-          },
-        },
-      },
       "publ.user_authentications": {
         "tags": {
           "omit": "all",
@@ -90,26 +67,6 @@
         },
       },
       "publ.change_password": {
-        "tags": {
-          "resultFieldName": "success",
-        },
-      },
-      "publ.request_account_deletion": {
-        "tags": {
-          "resultFieldName": "success",
-        },
-      },
-      "publ.confirm_account_deletion": {
-        "tags": {
-          "resultFieldName": "success",
-        },
-      },
-      "publ.resend_email_verification_code": {
-        "tags": {
-          "resultFieldName": "success",
-        },
-      },
-      "publ.verify_email": {
         "tags": {
           "resultFieldName": "success",
         },

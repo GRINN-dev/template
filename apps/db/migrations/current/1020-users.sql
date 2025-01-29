@@ -8,10 +8,16 @@
  * disagree then you should relocate these attributes to another table, such as
  * `user_secrets`.
  */
+/*
+  TABLE: publ.users
+  DESCRIPTION: Users who can log in to the admin application
+*/
+drop table if exists publ.users cascade;
 create table publ.users (
   id uuid primary key default gen_random_uuid(),
-  username citext not null unique check(length(username) >= 2 and length(username) <= 24 and username ~ '^[a-zA-Z]([_]?[a-zA-Z0-9])+$'),
-  name text,
+  firstname text,
+  lastname text,
+  email citext not null check (email ~ '[^@]+@[^@]+\.[^@]+'),
   avatar_url text check(avatar_url ~ '^https?://[^/]+'),
   is_admin boolean not null default false,
   is_verified boolean not null default false,
@@ -19,39 +25,43 @@ create table publ.users (
   updated_at timestamptz not null default now()
 );
 alter table publ.users enable row level security;
+alter table publ.users add constraint unique_email unique (email);
+
+comment on table publ.users is
+  E'A user who can log in to the admin application.';
+comment on column publ.users.id is
+  E'Unique identifier for the user.';
+comment on column publ.users.email is
+  E'The users email address, in `a@b.c` format.';
+comment on column publ.users.avatar_url is
+  E'Optional avatar URL.';
+comment on column publ.users.is_admin is
+  E'If true, the user has elevated privileges.';
 
 -- We couldn't implement this relationship on the sessions table until the users table existed!
 alter table priv.sessions
   add constraint sessions_user_id_fkey
   foreign key ("user_id") references publ.users on delete cascade;
 
--- Users are publicly visible, like on GitHub, Twitter, Facebook, Trello, etc.
-create policy select_all on publ.users for select using (true);
--- You can only update yourself.
-create policy update_self on publ.users for update using (id = publ.current_user_id());
-grant select on publ.users to :DATABASE_VISITOR;
--- NOTE: `insert` is not granted, because we'll handle that separately
-grant update(username, name, avatar_url) on publ.users to :DATABASE_VISITOR;
--- NOTE: `delete` is not granted, because we require confirmation via request_account_deletion/confirm_account_deletion
+-- indexes
+create index on publ.users(firstname);
+create index on publ.users(lastname);
+create index on publ.users(email);
+create index on publ.users(created_at);
+create index on publ.users(updated_at);
 
-comment on table publ.users is
-  E'A user who can log in to the application.';
-
-comment on column publ.users.id is
-  E'Unique identifier for the user.';
-comment on column publ.users.username is
-  E'Public-facing username (or ''handle'') of the user.';
-comment on column publ.users.name is
-  E'Public-facing name (or pseudonym) of the user.';
-comment on column publ.users.avatar_url is
-  E'Optional avatar URL.';
-comment on column publ.users.is_admin is
-  E'If true, the user has elevated privileges.';
-
+-- triggers 
 create trigger _100_timestamps
   before insert or update on publ.users
   for each row
   execute procedure priv.tg__timestamps();
+
+-- RBAC
+--!include rbac/users.sql
+
+
+-- policies
+--!include policies/users.sql
 
 /**********/
 

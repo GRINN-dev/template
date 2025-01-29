@@ -1,215 +1,26 @@
-"""The root query type which gives access points into the data universe."""
-type Query implements Node {
+type Podcast implements Node & Content {
   """
-  Exposes the root query type nested one level down. This is helpful for Relay 1
-  which can only query top level fields if they are in a particular form.
-  """
-  query: Query!
-
-  """
-  The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`.
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
   """
   nodeId: ID!
+  id: UUID!
+  podcastId: UUID!
+  transcript: String
+  type: ContentType!
+  title: String!
+  durationInSeconds: Int
+  createdAt: Datetime!
+  updatedAt: Datetime!
+  isExplicitlyArchived: Boolean!
+  archivedAt: Datetime
+  isATool: Boolean!
+  imageId: UUID
 
-  """Fetches an object given its globally unique `ID`."""
-  node(
-    """The globally unique `ID`."""
-    nodeId: ID!
-  ): Node
+  """Reads a single `Asset` that is related to this `Podcast`."""
+  podcast: Asset
 
-  """Get a single `Video`."""
-  video(id: UUID!): Video
-
-  """Get a single `UserEmail`."""
-  userEmail(id: UUID!): UserEmail
-
-  """Get a single `UserEmail`."""
-  userEmailByUserIdAndEmail(userId: UUID!, email: String!): UserEmail
-
-  """Get a single `UserAuthentication`."""
-  userAuthentication(id: UUID!): UserAuthentication
-
-  """Get a single `UserAuthentication`."""
-  userAuthenticationByServiceAndIdentifier(service: String!, identifier: String!): UserAuthentication
-
-  """Get a single `User`."""
-  user(id: UUID!): User
-
-  """Get a single `User`."""
-  userByUsername(username: String!): User
-
-  """Handy method to get the current session ID."""
-  currentSessionId: UUID
-
-  """
-  Handy method to get the current user ID for use in RLS policies, etc; in GraphQL, use `currentUser{id}` instead.
-  """
-  currentUserId: UUID
-
-  """The currently logged in user (or null if not logged in)."""
-  currentUser: User
-
-  """Reads a single `Video` using its globally unique `ID`."""
-  videoByNodeId(
-    """The globally unique `ID` to be used in selecting a single `Video`."""
-    nodeId: ID!
-  ): Video
-
-  """Reads a single `UserEmail` using its globally unique `ID`."""
-  userEmailByNodeId(
-    """The globally unique `ID` to be used in selecting a single `UserEmail`."""
-    nodeId: ID!
-  ): UserEmail
-
-  """Reads a single `UserAuthentication` using its globally unique `ID`."""
-  userAuthenticationByNodeId(
-    """
-    The globally unique `ID` to be used in selecting a single `UserAuthentication`.
-    """
-    nodeId: ID!
-  ): UserAuthentication
-
-  """Reads a single `User` using its globally unique `ID`."""
-  userByNodeId(
-    """The globally unique `ID` to be used in selecting a single `User`."""
-    nodeId: ID!
-  ): User
-
-  """Reads and enables pagination through a set of `Video`."""
-  videos(
-    """Only read the first `n` values of the set."""
-    first: Int
-
-    """Only read the last `n` values of the set."""
-    last: Int
-
-    """
-    Skip the first `n` values from our `after` cursor, an alternative to cursor
-    based pagination. May not be used with `last`.
-    """
-    offset: Int
-
-    """Read all values in the set before (above) this cursor."""
-    before: Cursor
-
-    """Read all values in the set after (below) this cursor."""
-    after: Cursor
-
-    """The method to use when ordering `Video`."""
-    orderBy: [VideoOrderBy!] = [PRIMARY_KEY_ASC]
-
-    """
-    A condition to be used in determining which values should be returned by the collection.
-    """
-    condition: VideoCondition
-
-    """
-    A filter to be used in determining which values should be returned by the collection.
-    """
-    filter: VideoFilter
-  ): VideoConnection
-
-  """Reads and enables pagination through a set of `UserEmail`."""
-  userEmails(
-    """Only read the first `n` values of the set."""
-    first: Int
-
-    """Only read the last `n` values of the set."""
-    last: Int
-
-    """
-    Skip the first `n` values from our `after` cursor, an alternative to cursor
-    based pagination. May not be used with `last`.
-    """
-    offset: Int
-
-    """Read all values in the set before (above) this cursor."""
-    before: Cursor
-
-    """Read all values in the set after (below) this cursor."""
-    after: Cursor
-
-    """The method to use when ordering `UserEmail`."""
-    orderBy: [UserEmailOrderBy!] = [PRIMARY_KEY_ASC]
-
-    """
-    A condition to be used in determining which values should be returned by the collection.
-    """
-    condition: UserEmailCondition
-
-    """
-    A filter to be used in determining which values should be returned by the collection.
-    """
-    filter: UserEmailFilter
-  ): UserEmailConnection
-
-  """Reads and enables pagination through a set of `UserAuthentication`."""
-  userAuthentications(
-    """Only read the first `n` values of the set."""
-    first: Int
-
-    """Only read the last `n` values of the set."""
-    last: Int
-
-    """
-    Skip the first `n` values from our `after` cursor, an alternative to cursor
-    based pagination. May not be used with `last`.
-    """
-    offset: Int
-
-    """Read all values in the set before (above) this cursor."""
-    before: Cursor
-
-    """Read all values in the set after (below) this cursor."""
-    after: Cursor
-
-    """The method to use when ordering `UserAuthentication`."""
-    orderBy: [UserAuthenticationOrderBy!] = [PRIMARY_KEY_ASC]
-
-    """
-    A condition to be used in determining which values should be returned by the collection.
-    """
-    condition: UserAuthenticationCondition
-
-    """
-    A filter to be used in determining which values should be returned by the collection.
-    """
-    filter: UserAuthenticationFilter
-  ): UserAuthenticationConnection
-
-  """Reads and enables pagination through a set of `User`."""
-  users(
-    """Only read the first `n` values of the set."""
-    first: Int
-
-    """Only read the last `n` values of the set."""
-    last: Int
-
-    """
-    Skip the first `n` values from our `after` cursor, an alternative to cursor
-    based pagination. May not be used with `last`.
-    """
-    offset: Int
-
-    """Read all values in the set before (above) this cursor."""
-    before: Cursor
-
-    """Read all values in the set after (below) this cursor."""
-    after: Cursor
-
-    """The method to use when ordering `User`."""
-    orderBy: [UserOrderBy!] = [PRIMARY_KEY_ASC]
-
-    """
-    A condition to be used in determining which values should be returned by the collection.
-    """
-    condition: UserCondition
-
-    """
-    A filter to be used in determining which values should be returned by the collection.
-    """
-    filter: UserFilter
-  ): UserConnection
+  """Reads a single `Asset` that is related to this `Podcast`."""
+  image: Asset
 }
 
 """An object with a globally unique `ID`."""
@@ -220,27 +31,41 @@ interface Node {
   nodeId: ID!
 }
 
-type Video implements Node {
+interface Content implements Node {
   """
   A globally unique identifier. Can be used in various places throughout the system to identify this single value.
   """
   nodeId: ID!
   id: UUID!
-  videoUrl: String!
+  type: ContentType!
   title: String!
-  userId: UUID!
+  durationInSeconds: Int
   createdAt: Datetime!
   updatedAt: Datetime!
-  signedVideoUrl: String
+  isExplicitlyArchived: Boolean!
+  archivedAt: Datetime
+  isATool: Boolean!
+  imageId: UUID
 
-  """Reads a single `User` that is related to this `Video`."""
-  user: User
+  """Reads a single `Asset` that is related to this `Content`."""
+  image: Asset
 }
 
 """
 A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122).
 """
 scalar UUID
+
+enum ContentType {
+  """Article"""
+  ARTICLE
+
+  """Podcast"""
+  PODCAST
+
+  """Video"""
+  VIDEO
+}
 
 """
 A point in time as described by the [ISO
@@ -251,33 +76,54 @@ to unexpected results.
 """
 scalar Datetime
 
-"""A user who can log in to the application."""
-type User implements Node {
+"""Assets (images and documents) that are used in the application."""
+type Asset implements Node {
   """
   A globally unique identifier. Can be used in various places throughout the system to identify this single value.
   """
   nodeId: ID!
 
-  """Unique identifier for the user."""
+  """Unique identifier for the asset."""
   id: UUID!
 
-  """Public-facing username (or 'handle') of the user."""
-  username: String!
+  """The name of the asset."""
+  name: String!
 
-  """Public-facing name (or pseudonym) of the user."""
-  name: String
+  """The URL of the asset stored in the S3 bucket."""
+  url: String!
 
-  """Optional avatar URL."""
-  avatarUrl: String
+  """The key of the asset."""
+  key: String!
 
-  """If true, the user has elevated privileges."""
-  isAdmin: Boolean!
-  isVerified: Boolean!
+  """The MIME type of the asset."""
+  mimeType: String!
+
+  """The size of the asset in bytes."""
+  size: Int!
+
+  """The formats sm, md, lg, thumbnail of the asset."""
+  formats: JSON
+
+  """The alt attribute of the asset."""
+  alt: String!
+
+  """The caption of the asset."""
+  caption: String
+
+  """The height of the asset in pixels."""
+  height: Int
+
+  """The width of the asset in pixels."""
+  width: Int
+  assetFolderId: UUID
   createdAt: Datetime!
   updatedAt: Datetime!
 
-  """Reads and enables pagination through a set of `UserEmail`."""
-  userEmails(
+  """Reads a single `AssetFolder` that is related to this `Asset`."""
+  assetFolder: AssetFolder
+
+  """Reads and enables pagination through a set of `Content`."""
+  contentsByImageId(
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -296,137 +142,135 @@ type User implements Node {
     """Read all values in the set after (below) this cursor."""
     after: Cursor
 
-    """The method to use when ordering `UserEmail`."""
-    orderBy: [UserEmailOrderBy!] = [PRIMARY_KEY_ASC]
+    """The method to use when ordering `Content`."""
+    orderBy: [ContentOrderBy!] = [PRIMARY_KEY_ASC]
 
     """
     A condition to be used in determining which values should be returned by the collection.
     """
-    condition: UserEmailCondition
+    condition: ContentCondition
 
     """
     A filter to be used in determining which values should be returned by the collection.
     """
-    filter: UserEmailFilter
-  ): UserEmailConnection!
-
-  """Reads and enables pagination through a set of `UserAuthentication`."""
-  userAuthentications(
-    """Only read the first `n` values of the set."""
-    first: Int
-
-    """Only read the last `n` values of the set."""
-    last: Int
-
-    """
-    Skip the first `n` values from our `after` cursor, an alternative to cursor
-    based pagination. May not be used with `last`.
-    """
-    offset: Int
-
-    """Read all values in the set before (above) this cursor."""
-    before: Cursor
-
-    """Read all values in the set after (below) this cursor."""
-    after: Cursor
-
-    """The method to use when ordering `UserAuthentication`."""
-    orderBy: [UserAuthenticationOrderBy!] = [PRIMARY_KEY_ASC]
-
-    """
-    A condition to be used in determining which values should be returned by the collection.
-    """
-    condition: UserAuthenticationCondition
-
-    """
-    A filter to be used in determining which values should be returned by the collection.
-    """
-    filter: UserAuthenticationFilter
-  ): UserAuthenticationConnection!
-
-  """Reads and enables pagination through a set of `Video`."""
-  videos(
-    """Only read the first `n` values of the set."""
-    first: Int
-
-    """Only read the last `n` values of the set."""
-    last: Int
-
-    """
-    Skip the first `n` values from our `after` cursor, an alternative to cursor
-    based pagination. May not be used with `last`.
-    """
-    offset: Int
-
-    """Read all values in the set before (above) this cursor."""
-    before: Cursor
-
-    """Read all values in the set after (below) this cursor."""
-    after: Cursor
-
-    """The method to use when ordering `Video`."""
-    orderBy: [VideoOrderBy!] = [PRIMARY_KEY_ASC]
-
-    """
-    A condition to be used in determining which values should be returned by the collection.
-    """
-    condition: VideoCondition
-
-    """
-    A filter to be used in determining which values should be returned by the collection.
-    """
-    filter: VideoFilter
-  ): VideoConnection!
+    filter: ContentFilter
+  ): ContentConnection!
 }
 
-"""A connection to a list of `UserEmail` values."""
-type UserEmailConnection {
-  """A list of `UserEmail` objects."""
-  nodes: [UserEmail]!
+"""
+Represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+"""Folders that contain assets or other folders."""
+type AssetFolder implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: UUID!
+  name: String!
+  slug: String!
+  parentId: UUID
+  createdAt: Datetime!
+  updatedAt: Datetime!
+
+  """Reads a single `AssetFolder` that is related to this `AssetFolder`."""
+  parent: AssetFolder
+
+  """Reads and enables pagination through a set of `AssetFolder`."""
+  childAssetFolders(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `AssetFolder`."""
+    orderBy: [AssetFolderOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: AssetFolderCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: AssetFolderFilter
+  ): AssetFolderConnection!
+
+  """Reads and enables pagination through a set of `Asset`."""
+  assets(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Asset`."""
+    orderBy: [AssetOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: AssetCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: AssetFilter
+  ): AssetConnection!
+}
+
+"""A connection to a list of `AssetFolder` values."""
+type AssetFolderConnection {
+  """A list of `AssetFolder` objects."""
+  nodes: [AssetFolder]!
 
   """
-  A list of edges which contains the `UserEmail` and cursor to aid in pagination.
+  A list of edges which contains the `AssetFolder` and cursor to aid in pagination.
   """
-  edges: [UserEmailEdge]!
+  edges: [AssetFolderEdge]!
 
   """Information to aid in pagination."""
   pageInfo: PageInfo!
 
-  """The count of *all* `UserEmail` you could get from the connection."""
+  """The count of *all* `AssetFolder` you could get from the connection."""
   totalCount: Int!
 }
 
-"""Information about a user's email address."""
-type UserEmail implements Node {
-  """
-  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
-  """
-  nodeId: ID!
-  id: UUID!
-  userId: UUID!
-
-  """The users email address, in `a@b.c` format."""
-  email: String!
-
-  """
-  True if the user has is_verified their email address (by clicking the link in the email we sent them, or logging in with a social login provider), false otherwise.
-  """
-  isVerified: Boolean!
-  isPrimary: Boolean!
-  createdAt: Datetime!
-  updatedAt: Datetime!
-
-  """Reads a single `User` that is related to this `UserEmail`."""
-  user: User
-}
-
-"""A `UserEmail` edge in the connection."""
-type UserEmailEdge {
+"""A `AssetFolder` edge in the connection."""
+type AssetFolderEdge {
   """A cursor for use in pagination."""
   cursor: Cursor
 
-  """The `UserEmail` at the end of the edge."""
-  node: UserEmail
+  """The `AssetFolder` at the end of the edge."""
+  node: AssetFolder
 }
 
 """A location in a connection that can be used for resuming pagination."""
@@ -447,70 +291,73 @@ type PageInfo {
   endCursor: Cursor
 }
 
-"""Methods to use when ordering `UserEmail`."""
-enum UserEmailOrderBy {
+"""Methods to use when ordering `AssetFolder`."""
+enum AssetFolderOrderBy {
   NATURAL
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC
-  ID_ASC
-  ID_DESC
-  USER_ID_ASC
-  USER_ID_DESC
-  IS_PRIMARY_ASC
-  IS_PRIMARY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  SLUG_ASC
+  SLUG_DESC
+  PARENT_ID_ASC
+  PARENT_ID_DESC
 }
 
 """
-A condition to be used against `UserEmail` object types. All fields are tested
+A condition to be used against `AssetFolder` object types. All fields are tested
 for equality and combined with a logical ‘and.’
 """
-input UserEmailCondition {
+input AssetFolderCondition {
   """Checks for equality with the object’s `id` field."""
   id: UUID
 
-  """Checks for equality with the object’s `userId` field."""
-  userId: UUID
+  """Checks for equality with the object’s `slug` field."""
+  slug: String
 
-  """Checks for equality with the object’s `isPrimary` field."""
-  isPrimary: Boolean
+  """Checks for equality with the object’s `parentId` field."""
+  parentId: UUID
 }
 
 """
-A filter to be used against `UserEmail` object types. All fields are combined with a logical ‘and.’
+A filter to be used against `AssetFolder` object types. All fields are combined with a logical ‘and.’
 """
-input UserEmailFilter {
+input AssetFolderFilter {
   """Filter by the object’s `id` field."""
   id: UUIDFilter
 
-  """Filter by the object’s `userId` field."""
-  userId: UUIDFilter
+  """Filter by the object’s `slug` field."""
+  slug: StringFilter
 
-  """Filter by the object’s `email` field."""
-  email: StringFilter
+  """Filter by the object’s `parentId` field."""
+  parentId: UUIDFilter
 
-  """Filter by the object’s `isVerified` field."""
-  isVerified: BooleanFilter
+  """Filter by the object’s `childAssetFolders` relation."""
+  childAssetFolders: AssetFolderToManyAssetFolderFilter
 
-  """Filter by the object’s `isPrimary` field."""
-  isPrimary: BooleanFilter
+  """Some related `childAssetFolders` exist."""
+  childAssetFoldersExist: Boolean
 
-  """Filter by the object’s `createdAt` field."""
-  createdAt: DatetimeFilter
+  """Filter by the object’s `assets` relation."""
+  assets: AssetFolderToManyAssetFilter
 
-  """Filter by the object’s `updatedAt` field."""
-  updatedAt: DatetimeFilter
+  """Some related `assets` exist."""
+  assetsExist: Boolean
 
-  """Filter by the object’s `user` relation."""
-  user: UserFilter
+  """Filter by the object’s `parent` relation."""
+  parent: AssetFolderFilter
+
+  """A related `parent` exists."""
+  parentExists: Boolean
 
   """Checks for all expressions in this list."""
-  and: [UserEmailFilter!]
+  and: [AssetFolderFilter!]
 
   """Checks for any expressions in this list."""
-  or: [UserEmailFilter!]
+  or: [AssetFolderFilter!]
 
   """Negates the expression."""
-  not: UserEmailFilter
+  not: AssetFolderFilter
 }
 
 """
@@ -688,45 +535,202 @@ input StringFilter {
 }
 
 """
-A filter to be used against Boolean fields. All fields are combined with a logical ‘and.’
+A filter to be used against many `AssetFolder` object types. All fields are combined with a logical ‘and.’
 """
-input BooleanFilter {
+input AssetFolderToManyAssetFolderFilter {
+  """
+  Every related `AssetFolder` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: AssetFolderFilter
+
+  """
+  Some related `AssetFolder` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: AssetFolderFilter
+
+  """
+  No related `AssetFolder` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: AssetFolderFilter
+}
+
+"""
+A filter to be used against many `Asset` object types. All fields are combined with a logical ‘and.’
+"""
+input AssetFolderToManyAssetFilter {
+  """
+  Every related `Asset` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: AssetFilter
+
+  """
+  Some related `Asset` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: AssetFilter
+
+  """
+  No related `Asset` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: AssetFilter
+}
+
+"""
+A filter to be used against `Asset` object types. All fields are combined with a logical ‘and.’
+"""
+input AssetFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `assetFolderId` field."""
+  assetFolderId: UUIDFilter
+
+  """Filter by the object’s `contentsByImageId` relation."""
+  contentsByImageId: AssetToManyContentFilter
+
+  """Some related `contentsByImageId` exist."""
+  contentsByImageIdExist: Boolean
+
+  """Filter by the object’s `assetFolder` relation."""
+  assetFolder: AssetFolderFilter
+
+  """A related `assetFolder` exists."""
+  assetFolderExists: Boolean
+
+  """Checks for all expressions in this list."""
+  and: [AssetFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [AssetFilter!]
+
+  """Negates the expression."""
+  not: AssetFilter
+}
+
+"""
+A filter to be used against many `Content` object types. All fields are combined with a logical ‘and.’
+"""
+input AssetToManyContentFilter {
+  """
+  Every related `Content` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: ContentFilter
+
+  """
+  Some related `Content` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: ContentFilter
+
+  """
+  No related `Content` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: ContentFilter
+}
+
+"""
+A filter to be used against `Content` object types. All fields are combined with a logical ‘and.’
+"""
+input ContentFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `type` field."""
+  type: ContentTypeFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `isExplicitlyArchived` field."""
+  isExplicitlyArchived: BooleanFilter
+
+  """Filter by the object’s `archivedAt` field."""
+  archivedAt: DatetimeFilter
+
+  """Filter by the object’s `isATool` field."""
+  isATool: BooleanFilter
+
+  """Filter by the object’s `imageId` field."""
+  imageId: UUIDFilter
+
+  """Filter by the object’s `article` relation."""
+  article: ArticleFilter
+
+  """A related `article` exists."""
+  articleExists: Boolean
+
+  """Filter by the object’s `podcast` relation."""
+  podcast: PodcastFilter
+
+  """A related `podcast` exists."""
+  podcastExists: Boolean
+
+  """Filter by the object’s `video` relation."""
+  video: VideoFilter
+
+  """A related `video` exists."""
+  videoExists: Boolean
+
+  """Filter by the object’s `image` relation."""
+  image: AssetFilter
+
+  """A related `image` exists."""
+  imageExists: Boolean
+
+  """Filter by the object’s `contentType` relation."""
+  contentType: ContentTypeFilter
+
+  """Checks for all expressions in this list."""
+  and: [ContentFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [ContentFilter!]
+
+  """Negates the expression."""
+  not: ContentFilter
+}
+
+"""
+A filter to be used against ContentType fields. All fields are combined with a logical ‘and.’
+"""
+input ContentTypeFilter {
   """
   Is null (if `true` is specified) or is not null (if `false` is specified).
   """
   isNull: Boolean
 
   """Equal to the specified value."""
-  equalTo: Boolean
+  equalTo: ContentType
 
   """Not equal to the specified value."""
-  notEqualTo: Boolean
+  notEqualTo: ContentType
 
   """
   Not equal to the specified value, treating null like an ordinary value.
   """
-  distinctFrom: Boolean
+  distinctFrom: ContentType
 
   """Equal to the specified value, treating null like an ordinary value."""
-  notDistinctFrom: Boolean
+  notDistinctFrom: ContentType
 
   """Included in the specified list."""
-  in: [Boolean!]
+  in: [ContentType!]
 
   """Not included in the specified list."""
-  notIn: [Boolean!]
+  notIn: [ContentType!]
 
   """Less than the specified value."""
-  lessThan: Boolean
+  lessThan: ContentType
 
   """Less than or equal to the specified value."""
-  lessThanOrEqualTo: Boolean
+  lessThanOrEqualTo: ContentType
 
   """Greater than the specified value."""
-  greaterThan: Boolean
+  greaterThan: ContentType
 
   """Greater than or equal to the specified value."""
-  greaterThanOrEqualTo: Boolean
+  greaterThanOrEqualTo: ContentType
 }
 
 """
@@ -772,219 +776,130 @@ input DatetimeFilter {
 }
 
 """
-A filter to be used against `User` object types. All fields are combined with a logical ‘and.’
+A filter to be used against Boolean fields. All fields are combined with a logical ‘and.’
 """
-input UserFilter {
-  """Filter by the object’s `id` field."""
-  id: UUIDFilter
-
-  """Filter by the object’s `username` field."""
-  username: StringFilter
-
-  """Filter by the object’s `name` field."""
-  name: StringFilter
-
-  """Filter by the object’s `avatarUrl` field."""
-  avatarUrl: StringFilter
-
-  """Filter by the object’s `isAdmin` field."""
-  isAdmin: BooleanFilter
-
-  """Filter by the object’s `isVerified` field."""
-  isVerified: BooleanFilter
-
-  """Filter by the object’s `createdAt` field."""
-  createdAt: DatetimeFilter
-
-  """Filter by the object’s `updatedAt` field."""
-  updatedAt: DatetimeFilter
-
-  """Filter by the object’s `userEmails` relation."""
-  userEmails: UserToManyUserEmailFilter
-
-  """Some related `userEmails` exist."""
-  userEmailsExist: Boolean
-
-  """Filter by the object’s `userAuthentications` relation."""
-  userAuthentications: UserToManyUserAuthenticationFilter
-
-  """Some related `userAuthentications` exist."""
-  userAuthenticationsExist: Boolean
-
-  """Filter by the object’s `videos` relation."""
-  videos: UserToManyVideoFilter
-
-  """Some related `videos` exist."""
-  videosExist: Boolean
-
-  """Checks for all expressions in this list."""
-  and: [UserFilter!]
-
-  """Checks for any expressions in this list."""
-  or: [UserFilter!]
-
-  """Negates the expression."""
-  not: UserFilter
-}
-
-"""
-A filter to be used against many `UserEmail` object types. All fields are combined with a logical ‘and.’
-"""
-input UserToManyUserEmailFilter {
-  """
-  Every related `UserEmail` matches the filter criteria. All fields are combined with a logical ‘and.’
-  """
-  every: UserEmailFilter
-
-  """
-  Some related `UserEmail` matches the filter criteria. All fields are combined with a logical ‘and.’
-  """
-  some: UserEmailFilter
-
-  """
-  No related `UserEmail` matches the filter criteria. All fields are combined with a logical ‘and.’
-  """
-  none: UserEmailFilter
-}
-
-"""
-A filter to be used against many `UserAuthentication` object types. All fields are combined with a logical ‘and.’
-"""
-input UserToManyUserAuthenticationFilter {
-  """
-  Every related `UserAuthentication` matches the filter criteria. All fields are combined with a logical ‘and.’
-  """
-  every: UserAuthenticationFilter
-
-  """
-  Some related `UserAuthentication` matches the filter criteria. All fields are combined with a logical ‘and.’
-  """
-  some: UserAuthenticationFilter
-
-  """
-  No related `UserAuthentication` matches the filter criteria. All fields are combined with a logical ‘and.’
-  """
-  none: UserAuthenticationFilter
-}
-
-"""
-A filter to be used against `UserAuthentication` object types. All fields are combined with a logical ‘and.’
-"""
-input UserAuthenticationFilter {
-  """Filter by the object’s `id` field."""
-  id: UUIDFilter
-
-  """Filter by the object’s `userId` field."""
-  userId: UUIDFilter
-
-  """Filter by the object’s `service` field."""
-  service: StringFilter
-
-  """Filter by the object’s `identifier` field."""
-  identifier: StringFilter
-
-  """Filter by the object’s `details` field."""
-  details: JSONFilter
-
-  """Filter by the object’s `createdAt` field."""
-  createdAt: DatetimeFilter
-
-  """Filter by the object’s `updatedAt` field."""
-  updatedAt: DatetimeFilter
-
-  """Filter by the object’s `user` relation."""
-  user: UserFilter
-
-  """Checks for all expressions in this list."""
-  and: [UserAuthenticationFilter!]
-
-  """Checks for any expressions in this list."""
-  or: [UserAuthenticationFilter!]
-
-  """Negates the expression."""
-  not: UserAuthenticationFilter
-}
-
-"""
-A filter to be used against JSON fields. All fields are combined with a logical ‘and.’
-"""
-input JSONFilter {
+input BooleanFilter {
   """
   Is null (if `true` is specified) or is not null (if `false` is specified).
   """
   isNull: Boolean
 
   """Equal to the specified value."""
-  equalTo: JSON
+  equalTo: Boolean
 
   """Not equal to the specified value."""
-  notEqualTo: JSON
+  notEqualTo: Boolean
 
   """
   Not equal to the specified value, treating null like an ordinary value.
   """
-  distinctFrom: JSON
+  distinctFrom: Boolean
 
   """Equal to the specified value, treating null like an ordinary value."""
-  notDistinctFrom: JSON
+  notDistinctFrom: Boolean
 
   """Included in the specified list."""
-  in: [JSON!]
+  in: [Boolean!]
 
   """Not included in the specified list."""
-  notIn: [JSON!]
+  notIn: [Boolean!]
 
   """Less than the specified value."""
-  lessThan: JSON
+  lessThan: Boolean
 
   """Less than or equal to the specified value."""
-  lessThanOrEqualTo: JSON
+  lessThanOrEqualTo: Boolean
 
   """Greater than the specified value."""
-  greaterThan: JSON
+  greaterThan: Boolean
 
   """Greater than or equal to the specified value."""
-  greaterThanOrEqualTo: JSON
-
-  """Contains the specified JSON."""
-  contains: JSON
-
-  """Contains the specified key."""
-  containsKey: String
-
-  """Contains all of the specified keys."""
-  containsAllKeys: [String!]
-
-  """Contains any of the specified keys."""
-  containsAnyKeys: [String!]
-
-  """Contained by the specified JSON."""
-  containedBy: JSON
+  greaterThanOrEqualTo: Boolean
 }
 
 """
-Represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+A filter to be used against `Article` object types. All fields are combined with a logical ‘and.’
 """
-scalar JSON
+input ArticleFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `type` field."""
+  type: ContentTypeFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `isExplicitlyArchived` field."""
+  isExplicitlyArchived: BooleanFilter
+
+  """Filter by the object’s `archivedAt` field."""
+  archivedAt: DatetimeFilter
+
+  """Filter by the object’s `isATool` field."""
+  isATool: BooleanFilter
+
+  """Filter by the object’s `imageId` field."""
+  imageId: UUIDFilter
+
+  """Filter by the object’s `row` relation."""
+  row: ContentFilter
+
+  """Checks for all expressions in this list."""
+  and: [ArticleFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [ArticleFilter!]
+
+  """Negates the expression."""
+  not: ArticleFilter
+}
 
 """
-A filter to be used against many `Video` object types. All fields are combined with a logical ‘and.’
+A filter to be used against `Podcast` object types. All fields are combined with a logical ‘and.’
 """
-input UserToManyVideoFilter {
-  """
-  Every related `Video` matches the filter criteria. All fields are combined with a logical ‘and.’
-  """
-  every: VideoFilter
+input PodcastFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
 
-  """
-  Some related `Video` matches the filter criteria. All fields are combined with a logical ‘and.’
-  """
-  some: VideoFilter
+  """Filter by the object’s `type` field."""
+  type: ContentTypeFilter
 
-  """
-  No related `Video` matches the filter criteria. All fields are combined with a logical ‘and.’
-  """
-  none: VideoFilter
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `isExplicitlyArchived` field."""
+  isExplicitlyArchived: BooleanFilter
+
+  """Filter by the object’s `archivedAt` field."""
+  archivedAt: DatetimeFilter
+
+  """Filter by the object’s `isATool` field."""
+  isATool: BooleanFilter
+
+  """Filter by the object’s `imageId` field."""
+  imageId: UUIDFilter
+
+  """Filter by the object’s `row` relation."""
+  row: ContentFilter
+
+  """Filter by the object’s `podcast` relation."""
+  podcast: AssetFilter
+
+  """Checks for all expressions in this list."""
+  and: [PodcastFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [PodcastFilter!]
+
+  """Negates the expression."""
+  not: PodcastFilter
 }
 
 """
@@ -994,14 +909,8 @@ input VideoFilter {
   """Filter by the object’s `id` field."""
   id: UUIDFilter
 
-  """Filter by the object’s `videoUrl` field."""
-  videoUrl: StringFilter
-
-  """Filter by the object’s `title` field."""
-  title: StringFilter
-
-  """Filter by the object’s `userId` field."""
-  userId: UUIDFilter
+  """Filter by the object’s `type` field."""
+  type: ContentTypeFilter
 
   """Filter by the object’s `createdAt` field."""
   createdAt: DatetimeFilter
@@ -1009,8 +918,20 @@ input VideoFilter {
   """Filter by the object’s `updatedAt` field."""
   updatedAt: DatetimeFilter
 
-  """Filter by the object’s `user` relation."""
-  user: UserFilter
+  """Filter by the object’s `isExplicitlyArchived` field."""
+  isExplicitlyArchived: BooleanFilter
+
+  """Filter by the object’s `archivedAt` field."""
+  archivedAt: DatetimeFilter
+
+  """Filter by the object’s `isATool` field."""
+  isATool: BooleanFilter
+
+  """Filter by the object’s `imageId` field."""
+  imageId: UUIDFilter
+
+  """Filter by the object’s `row` relation."""
+  row: ContentFilter
 
   """Checks for all expressions in this list."""
   and: [VideoFilter!]
@@ -1022,23 +943,1007 @@ input VideoFilter {
   not: VideoFilter
 }
 
-"""A connection to a list of `UserAuthentication` values."""
-type UserAuthenticationConnection {
-  """A list of `UserAuthentication` objects."""
-  nodes: [UserAuthentication]!
+"""A connection to a list of `Asset` values."""
+type AssetConnection {
+  """A list of `Asset` objects."""
+  nodes: [Asset]!
 
   """
-  A list of edges which contains the `UserAuthentication` and cursor to aid in pagination.
+  A list of edges which contains the `Asset` and cursor to aid in pagination.
   """
-  edges: [UserAuthenticationEdge]!
+  edges: [AssetEdge]!
 
   """Information to aid in pagination."""
   pageInfo: PageInfo!
 
-  """
-  The count of *all* `UserAuthentication` you could get from the connection.
-  """
+  """The count of *all* `Asset` you could get from the connection."""
   totalCount: Int!
+}
+
+"""A `Asset` edge in the connection."""
+type AssetEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Asset` at the end of the edge."""
+  node: Asset
+}
+
+"""Methods to use when ordering `Asset`."""
+enum AssetOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  ASSET_FOLDER_ID_ASC
+  ASSET_FOLDER_ID_DESC
+}
+
+"""
+A condition to be used against `Asset` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input AssetCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `assetFolderId` field."""
+  assetFolderId: UUID
+}
+
+"""A connection to a list of `Content` values."""
+type ContentConnection {
+  """A list of `Content` objects."""
+  nodes: [Content]!
+
+  """
+  A list of edges which contains the `Content` and cursor to aid in pagination.
+  """
+  edges: [ContentEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Content` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Content` edge in the connection."""
+type ContentEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Content` at the end of the edge."""
+  node: Content
+}
+
+"""Methods to use when ordering `Content`."""
+enum ContentOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  TYPE_ASC
+  TYPE_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+  IS_EXPLICITLY_ARCHIVED_ASC
+  IS_EXPLICITLY_ARCHIVED_DESC
+  ARCHIVED_AT_ASC
+  ARCHIVED_AT_DESC
+  IS_A_TOOL_ASC
+  IS_A_TOOL_DESC
+  IMAGE_ID_ASC
+  IMAGE_ID_DESC
+}
+
+"""
+A condition to be used against `Content` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input ContentCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `type` field."""
+  type: ContentType
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+
+  """Checks for equality with the object’s `isExplicitlyArchived` field."""
+  isExplicitlyArchived: Boolean
+
+  """Checks for equality with the object’s `archivedAt` field."""
+  archivedAt: Datetime
+
+  """Checks for equality with the object’s `isATool` field."""
+  isATool: Boolean
+
+  """Checks for equality with the object’s `imageId` field."""
+  imageId: UUID
+}
+
+type Video implements Node & Content {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: UUID!
+  vimeoId: String!
+  transcript: String
+  type: ContentType!
+  title: String!
+  durationInSeconds: Int
+  createdAt: Datetime!
+  updatedAt: Datetime!
+  isExplicitlyArchived: Boolean!
+  archivedAt: Datetime
+  isATool: Boolean!
+  imageId: UUID
+
+  """Reads a single `Asset` that is related to this `Video`."""
+  image: Asset
+}
+
+type Article implements Node & Content {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: UUID!
+  body: JSON!
+  type: ContentType!
+  title: String!
+  durationInSeconds: Int
+  createdAt: Datetime!
+  updatedAt: Datetime!
+  isExplicitlyArchived: Boolean!
+  archivedAt: Datetime
+  isATool: Boolean!
+  imageId: UUID
+
+  """Reads a single `Asset` that is related to this `Article`."""
+  image: Asset
+}
+
+"""The root query type which gives access points into the data universe."""
+type Query implements Node {
+  """
+  Exposes the root query type nested one level down. This is helpful for Relay 1
+  which can only query top level fields if they are in a particular form.
+  """
+  query: Query!
+
+  """
+  The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`.
+  """
+  nodeId: ID!
+
+  """Fetches an object given its globally unique `ID`."""
+  node(
+    """The globally unique `ID`."""
+    nodeId: ID!
+  ): Node
+
+  """Get a single `Podcast`."""
+  podcast(id: UUID!): Podcast
+
+  """Get a single `Video`."""
+  video(id: UUID!): Video
+
+  """Get a single `Article`."""
+  article(id: UUID!): Article
+
+  """Get a single `Country`."""
+  country(id: UUID!): Country
+
+  """Get a single `Region`."""
+  region(id: UUID!): Region
+
+  """Get a single `AssetFolder`."""
+  assetFolder(id: UUID!): AssetFolder
+
+  """Get a single `AssetFolder`."""
+  assetFolderBySlug(slug: String!): AssetFolder
+
+  """Get a single `Author`."""
+  author(id: UUID!): Author
+
+  """Get a single `District`."""
+  district(id: UUID!): District
+
+  """Get a single `Page`."""
+  page(id: UUID!): Page
+
+  """Get a single `Page`."""
+  pageBySlug(slug: String!): Page
+
+  """Get a single `UserAuthentication`."""
+  userAuthentication(id: UUID!): UserAuthentication
+
+  """Get a single `UserAuthentication`."""
+  userAuthenticationByServiceAndIdentifier(service: String!, identifier: String!): UserAuthentication
+
+  """Get a single `BlogPost`."""
+  blogPost(id: UUID!): BlogPost
+
+  """Get a single `BlogPost`."""
+  blogPostBySlug(slug: String!): BlogPost
+
+  """Get a single `User`."""
+  user(id: UUID!): User
+
+  """Get a single `User`."""
+  userByEmail(email: String!): User
+
+  """Get a single `City`."""
+  city(id: UUID!): City
+
+  """Get a single `Address`."""
+  address(id: UUID!): Address
+
+  """Get a single `Asset`."""
+  asset(id: UUID!): Asset
+
+  """Handy method to get the current session ID."""
+  currentSessionId: UUID
+
+  """
+  Handy method to get the current user ID for use in RLS policies, etc; in GraphQL, use `currentUser{id}` instead.
+  """
+  currentUserId: UUID
+
+  """The currently logged in user (or null if not logged in)."""
+  currentUser: User
+
+  """Reads a single `Podcast` using its globally unique `ID`."""
+  podcastByNodeId(
+    """The globally unique `ID` to be used in selecting a single `Podcast`."""
+    nodeId: ID!
+  ): Podcast
+
+  """Reads a single `Video` using its globally unique `ID`."""
+  videoByNodeId(
+    """The globally unique `ID` to be used in selecting a single `Video`."""
+    nodeId: ID!
+  ): Video
+
+  """Reads a single `Article` using its globally unique `ID`."""
+  articleByNodeId(
+    """The globally unique `ID` to be used in selecting a single `Article`."""
+    nodeId: ID!
+  ): Article
+
+  """Reads a single `Country` using its globally unique `ID`."""
+  countryByNodeId(
+    """The globally unique `ID` to be used in selecting a single `Country`."""
+    nodeId: ID!
+  ): Country
+
+  """Reads a single `Region` using its globally unique `ID`."""
+  regionByNodeId(
+    """The globally unique `ID` to be used in selecting a single `Region`."""
+    nodeId: ID!
+  ): Region
+
+  """Reads a single `AssetFolder` using its globally unique `ID`."""
+  assetFolderByNodeId(
+    """
+    The globally unique `ID` to be used in selecting a single `AssetFolder`.
+    """
+    nodeId: ID!
+  ): AssetFolder
+
+  """Reads a single `Author` using its globally unique `ID`."""
+  authorByNodeId(
+    """The globally unique `ID` to be used in selecting a single `Author`."""
+    nodeId: ID!
+  ): Author
+
+  """Reads a single `District` using its globally unique `ID`."""
+  districtByNodeId(
+    """The globally unique `ID` to be used in selecting a single `District`."""
+    nodeId: ID!
+  ): District
+
+  """Reads a single `Page` using its globally unique `ID`."""
+  pageByNodeId(
+    """The globally unique `ID` to be used in selecting a single `Page`."""
+    nodeId: ID!
+  ): Page
+
+  """Reads a single `UserAuthentication` using its globally unique `ID`."""
+  userAuthenticationByNodeId(
+    """
+    The globally unique `ID` to be used in selecting a single `UserAuthentication`.
+    """
+    nodeId: ID!
+  ): UserAuthentication
+
+  """Reads a single `BlogPost` using its globally unique `ID`."""
+  blogPostByNodeId(
+    """The globally unique `ID` to be used in selecting a single `BlogPost`."""
+    nodeId: ID!
+  ): BlogPost
+
+  """Reads a single `User` using its globally unique `ID`."""
+  userByNodeId(
+    """The globally unique `ID` to be used in selecting a single `User`."""
+    nodeId: ID!
+  ): User
+
+  """Reads a single `City` using its globally unique `ID`."""
+  cityByNodeId(
+    """The globally unique `ID` to be used in selecting a single `City`."""
+    nodeId: ID!
+  ): City
+
+  """Reads a single `Address` using its globally unique `ID`."""
+  addressByNodeId(
+    """The globally unique `ID` to be used in selecting a single `Address`."""
+    nodeId: ID!
+  ): Address
+
+  """Reads a single `Asset` using its globally unique `ID`."""
+  assetByNodeId(
+    """The globally unique `ID` to be used in selecting a single `Asset`."""
+    nodeId: ID!
+  ): Asset
+
+  """Reads and enables pagination through a set of `Podcast`."""
+  podcasts(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Podcast`."""
+    orderBy: [PodcastOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: PodcastCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: PodcastFilter
+  ): PodcastConnection
+
+  """Reads and enables pagination through a set of `Video`."""
+  videos(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Video`."""
+    orderBy: [VideoOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: VideoCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: VideoFilter
+  ): VideoConnection
+
+  """Reads and enables pagination through a set of `Article`."""
+  articles(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Article`."""
+    orderBy: [ArticleOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: ArticleCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: ArticleFilter
+  ): ArticleConnection
+
+  """Reads and enables pagination through a set of `Country`."""
+  countries(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Country`."""
+    orderBy: [CountryOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: CountryCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: CountryFilter
+  ): CountryConnection
+
+  """Reads and enables pagination through a set of `Region`."""
+  regions(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Region`."""
+    orderBy: [RegionOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: RegionCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: RegionFilter
+  ): RegionConnection
+
+  """Reads and enables pagination through a set of `AssetFolder`."""
+  assetFolders(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `AssetFolder`."""
+    orderBy: [AssetFolderOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: AssetFolderCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: AssetFolderFilter
+  ): AssetFolderConnection
+
+  """Reads and enables pagination through a set of `Author`."""
+  authors(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Author`."""
+    orderBy: [AuthorOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: AuthorCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: AuthorFilter
+  ): AuthorConnection
+
+  """Reads and enables pagination through a set of `District`."""
+  districts(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `District`."""
+    orderBy: [DistrictOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: DistrictCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: DistrictFilter
+  ): DistrictConnection
+
+  """Reads and enables pagination through a set of `Page`."""
+  pages(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Page`."""
+    orderBy: [PageOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: PageCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: PageFilter
+  ): PageConnection
+
+  """Reads and enables pagination through a set of `UserAuthentication`."""
+  userAuthentications(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `UserAuthentication`."""
+    orderBy: [UserAuthenticationOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: UserAuthenticationCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: UserAuthenticationFilter
+  ): UserAuthenticationConnection
+
+  """Reads and enables pagination through a set of `BlogPost`."""
+  blogPosts(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `BlogPost`."""
+    orderBy: [BlogPostOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: BlogPostCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: BlogPostFilter
+  ): BlogPostConnection
+
+  """Reads and enables pagination through a set of `User`."""
+  users(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `User`."""
+    orderBy: [UserOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: UserCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: UserFilter
+  ): UserConnection
+
+  """Reads and enables pagination through a set of `City`."""
+  cities(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `City`."""
+    orderBy: [CityOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: CityCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: CityFilter
+  ): CityConnection
+
+  """Reads and enables pagination through a set of `Address`."""
+  addresses(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Address`."""
+    orderBy: [AddressOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: AddressCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: AddressFilter
+  ): AddressConnection
+
+  """Reads and enables pagination through a set of `Content`."""
+  contents(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Content`."""
+    orderBy: [ContentOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: ContentCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: ContentFilter
+  ): ContentConnection
+
+  """Reads and enables pagination through a set of `Asset`."""
+  assets(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Asset`."""
+    orderBy: [AssetOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: AssetCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: AssetFilter
+  ): AssetConnection
+}
+
+type Country implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: UUID!
+  name: String!
+  createdAt: Datetime!
+  updatedAt: Datetime!
+}
+
+type Region implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: UUID!
+  name: String!
+  countryId: UUID!
+  createdAt: Datetime!
+  updatedAt: Datetime!
+
+  """Reads a single `Country` that is related to this `Region`."""
+  country: Country
+}
+
+"""Authors of blog posts."""
+type Author implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+
+  """Unique identifier for the author."""
+  id: UUID!
+
+  """The name of the author."""
+  name: String!
+
+  """The avatar of the author."""
+  avatarId: UUID
+
+  """The title of the author."""
+  title: String
+  createdAt: Datetime!
+  updatedAt: Datetime!
+
+  """Reads a single `AssetFolder` that is related to this `Author`."""
+  avatar: AssetFolder
+}
+
+type District implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: UUID!
+  name: String!
+  zipCode: String!
+  regionId: UUID!
+  createdAt: Datetime!
+  updatedAt: Datetime!
+
+  """Reads a single `Region` that is related to this `District`."""
+  region: Region
+}
+
+"""
+Pages of the application that are not blog posts or churches or routes.
+"""
+type Page implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+
+  """Unique identifier for the page."""
+  id: UUID!
+
+  """The slug of the page that is used in the URL."""
+  slug: String!
+
+  """The status of the page."""
+  status: PageStatus!
+
+  """The title of the page."""
+  title: String!
+
+  """The content of the page in rich text."""
+  content: JSON
+  createdAt: Datetime!
+  updatedAt: Datetime!
+}
+
+enum PageStatus {
+  """The page is in draft mode."""
+  DRAFT
+
+  """The page is published."""
+  PUBLISHED
+
+  """The page is archived."""
+  ARCHIVED
 }
 
 """
@@ -1067,6 +1972,84 @@ type UserAuthentication implements Node {
   user: User
 }
 
+"""A user who can log in to the application."""
+type User implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+
+  """Unique identifier for the user."""
+  id: UUID!
+  firstname: String
+  lastname: String
+
+  """The users email address, in `a@b.c` format."""
+  email: String!
+
+  """Optional avatar URL."""
+  avatarUrl: String
+
+  """If true, the user has elevated privileges."""
+  isAdmin: Boolean!
+  isVerified: Boolean!
+  createdAt: Datetime!
+  updatedAt: Datetime!
+
+  """Reads and enables pagination through a set of `UserAuthentication`."""
+  userAuthentications(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `UserAuthentication`."""
+    orderBy: [UserAuthenticationOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: UserAuthenticationCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: UserAuthenticationFilter
+  ): UserAuthenticationConnection!
+}
+
+"""A connection to a list of `UserAuthentication` values."""
+type UserAuthenticationConnection {
+  """A list of `UserAuthentication` objects."""
+  nodes: [UserAuthentication]!
+
+  """
+  A list of edges which contains the `UserAuthentication` and cursor to aid in pagination.
+  """
+  edges: [UserAuthenticationEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """
+  The count of *all* `UserAuthentication` you could get from the connection.
+  """
+  totalCount: Int!
+}
+
 """A `UserAuthentication` edge in the connection."""
 type UserAuthenticationEdge {
   """A cursor for use in pagination."""
@@ -1081,8 +2064,8 @@ enum UserAuthenticationOrderBy {
   NATURAL
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC
-  ID_ASC
-  ID_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
   USER_ID_ASC
   USER_ID_DESC
   SERVICE_ASC
@@ -1102,6 +2085,251 @@ input UserAuthenticationCondition {
 
   """Checks for equality with the object’s `service` field."""
   service: String
+}
+
+"""
+A filter to be used against `UserAuthentication` object types. All fields are combined with a logical ‘and.’
+"""
+input UserAuthenticationFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `userId` field."""
+  userId: UUIDFilter
+
+  """Filter by the object’s `service` field."""
+  service: StringFilter
+
+  """Filter by the object’s `user` relation."""
+  user: UserFilter
+
+  """Checks for all expressions in this list."""
+  and: [UserAuthenticationFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [UserAuthenticationFilter!]
+
+  """Negates the expression."""
+  not: UserAuthenticationFilter
+}
+
+"""
+A filter to be used against `User` object types. All fields are combined with a logical ‘and.’
+"""
+input UserFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `firstname` field."""
+  firstname: StringFilter
+
+  """Filter by the object’s `lastname` field."""
+  lastname: StringFilter
+
+  """Filter by the object’s `email` field."""
+  email: StringFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `userAuthentications` relation."""
+  userAuthentications: UserToManyUserAuthenticationFilter
+
+  """Some related `userAuthentications` exist."""
+  userAuthenticationsExist: Boolean
+
+  """Checks for all expressions in this list."""
+  and: [UserFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [UserFilter!]
+
+  """Negates the expression."""
+  not: UserFilter
+}
+
+"""
+A filter to be used against many `UserAuthentication` object types. All fields are combined with a logical ‘and.’
+"""
+input UserToManyUserAuthenticationFilter {
+  """
+  Every related `UserAuthentication` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: UserAuthenticationFilter
+
+  """
+  Some related `UserAuthentication` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: UserAuthenticationFilter
+
+  """
+  No related `UserAuthentication` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: UserAuthenticationFilter
+}
+
+"""Blog posts."""
+type BlogPost implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+
+  """Unique identifier for the blog post."""
+  id: UUID!
+
+  """The slug of the blog post that is used in the URL."""
+  slug: String!
+
+  """The title of the blog post."""
+  title: String!
+
+  """The content of the blog post in rich text."""
+  content: JSON
+
+  """The status of the blog post."""
+  status: BlogPostStatus!
+
+  """The author of the blog post."""
+  authorId: UUID
+
+  """The date and time the blog post was published."""
+  publishedAt: Datetime
+  createdAt: Datetime!
+  updatedAt: Datetime!
+
+  """Reads a single `Author` that is related to this `BlogPost`."""
+  author: Author
+}
+
+enum BlogPostStatus {
+  """The blog post is a draft."""
+  DRAFT
+
+  """The blog post has been published."""
+  PUBLISHED
+
+  """The blog post has been archived."""
+  ARCHIVED
+}
+
+type City implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: UUID!
+  name: String!
+  zipCode: String!
+  latitude: Float!
+  longitude: Float!
+  districtId: UUID!
+  createdAt: Datetime!
+  updatedAt: Datetime!
+
+  """Reads a single `District` that is related to this `City`."""
+  district: District
+}
+
+type Address implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: UUID!
+  firstLine: String!
+  secondLine: String
+  zipCode: String!
+  latitude: Float!
+  longitude: Float!
+  cityId: UUID!
+  formattedAddress: String!
+  createdAt: Datetime!
+  updatedAt: Datetime!
+
+  """Reads a single `City` that is related to this `Address`."""
+  city: City
+}
+
+"""A connection to a list of `Podcast` values."""
+type PodcastConnection {
+  """A list of `Podcast` objects."""
+  nodes: [Podcast]!
+
+  """
+  A list of edges which contains the `Podcast` and cursor to aid in pagination.
+  """
+  edges: [PodcastEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Podcast` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Podcast` edge in the connection."""
+type PodcastEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Podcast` at the end of the edge."""
+  node: Podcast
+}
+
+"""Methods to use when ordering `Podcast`."""
+enum PodcastOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  TYPE_ASC
+  TYPE_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+  IS_EXPLICITLY_ARCHIVED_ASC
+  IS_EXPLICITLY_ARCHIVED_DESC
+  ARCHIVED_AT_ASC
+  ARCHIVED_AT_DESC
+  IS_A_TOOL_ASC
+  IS_A_TOOL_DESC
+  IMAGE_ID_ASC
+  IMAGE_ID_DESC
+}
+
+"""
+A condition to be used against `Podcast` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input PodcastCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `type` field."""
+  type: ContentType
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+
+  """Checks for equality with the object’s `isExplicitlyArchived` field."""
+  isExplicitlyArchived: Boolean
+
+  """Checks for equality with the object’s `archivedAt` field."""
+  archivedAt: Datetime
+
+  """Checks for equality with the object’s `isATool` field."""
+  isATool: Boolean
+
+  """Checks for equality with the object’s `imageId` field."""
+  imageId: UUID
 }
 
 """A connection to a list of `Video` values."""
@@ -1135,14 +2363,22 @@ enum VideoOrderBy {
   NATURAL
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC
-  ID_ASC
-  ID_DESC
-  USER_ID_ASC
-  USER_ID_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  TYPE_ASC
+  TYPE_DESC
   CREATED_AT_ASC
   CREATED_AT_DESC
   UPDATED_AT_ASC
   UPDATED_AT_DESC
+  IS_EXPLICITLY_ARCHIVED_ASC
+  IS_EXPLICITLY_ARCHIVED_DESC
+  ARCHIVED_AT_ASC
+  ARCHIVED_AT_DESC
+  IS_A_TOOL_ASC
+  IS_A_TOOL_DESC
+  IMAGE_ID_ASC
+  IMAGE_ID_DESC
 }
 
 """
@@ -1152,14 +2388,750 @@ input VideoCondition {
   """Checks for equality with the object’s `id` field."""
   id: UUID
 
-  """Checks for equality with the object’s `userId` field."""
-  userId: UUID
+  """Checks for equality with the object’s `type` field."""
+  type: ContentType
 
   """Checks for equality with the object’s `createdAt` field."""
   createdAt: Datetime
 
   """Checks for equality with the object’s `updatedAt` field."""
   updatedAt: Datetime
+
+  """Checks for equality with the object’s `isExplicitlyArchived` field."""
+  isExplicitlyArchived: Boolean
+
+  """Checks for equality with the object’s `archivedAt` field."""
+  archivedAt: Datetime
+
+  """Checks for equality with the object’s `isATool` field."""
+  isATool: Boolean
+
+  """Checks for equality with the object’s `imageId` field."""
+  imageId: UUID
+}
+
+"""A connection to a list of `Article` values."""
+type ArticleConnection {
+  """A list of `Article` objects."""
+  nodes: [Article]!
+
+  """
+  A list of edges which contains the `Article` and cursor to aid in pagination.
+  """
+  edges: [ArticleEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Article` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Article` edge in the connection."""
+type ArticleEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Article` at the end of the edge."""
+  node: Article
+}
+
+"""Methods to use when ordering `Article`."""
+enum ArticleOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  TYPE_ASC
+  TYPE_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+  IS_EXPLICITLY_ARCHIVED_ASC
+  IS_EXPLICITLY_ARCHIVED_DESC
+  ARCHIVED_AT_ASC
+  ARCHIVED_AT_DESC
+  IS_A_TOOL_ASC
+  IS_A_TOOL_DESC
+  IMAGE_ID_ASC
+  IMAGE_ID_DESC
+}
+
+"""
+A condition to be used against `Article` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input ArticleCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `type` field."""
+  type: ContentType
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+
+  """Checks for equality with the object’s `isExplicitlyArchived` field."""
+  isExplicitlyArchived: Boolean
+
+  """Checks for equality with the object’s `archivedAt` field."""
+  archivedAt: Datetime
+
+  """Checks for equality with the object’s `isATool` field."""
+  isATool: Boolean
+
+  """Checks for equality with the object’s `imageId` field."""
+  imageId: UUID
+}
+
+"""A connection to a list of `Country` values."""
+type CountryConnection {
+  """A list of `Country` objects."""
+  nodes: [Country]!
+
+  """
+  A list of edges which contains the `Country` and cursor to aid in pagination.
+  """
+  edges: [CountryEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Country` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Country` edge in the connection."""
+type CountryEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Country` at the end of the edge."""
+  node: Country
+}
+
+"""Methods to use when ordering `Country`."""
+enum CountryOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  NAME_ASC
+  NAME_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+}
+
+"""
+A condition to be used against `Country` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input CountryCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `name` field."""
+  name: String
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+}
+
+"""
+A filter to be used against `Country` object types. All fields are combined with a logical ‘and.’
+"""
+input CountryFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `name` field."""
+  name: StringFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Checks for all expressions in this list."""
+  and: [CountryFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [CountryFilter!]
+
+  """Negates the expression."""
+  not: CountryFilter
+}
+
+"""A connection to a list of `Region` values."""
+type RegionConnection {
+  """A list of `Region` objects."""
+  nodes: [Region]!
+
+  """
+  A list of edges which contains the `Region` and cursor to aid in pagination.
+  """
+  edges: [RegionEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Region` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Region` edge in the connection."""
+type RegionEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Region` at the end of the edge."""
+  node: Region
+}
+
+"""Methods to use when ordering `Region`."""
+enum RegionOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  NAME_ASC
+  NAME_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+}
+
+"""
+A condition to be used against `Region` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input RegionCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `name` field."""
+  name: String
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+}
+
+"""
+A filter to be used against `Region` object types. All fields are combined with a logical ‘and.’
+"""
+input RegionFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `name` field."""
+  name: StringFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `country` relation."""
+  country: CountryFilter
+
+  """Checks for all expressions in this list."""
+  and: [RegionFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [RegionFilter!]
+
+  """Negates the expression."""
+  not: RegionFilter
+}
+
+"""A connection to a list of `Author` values."""
+type AuthorConnection {
+  """A list of `Author` objects."""
+  nodes: [Author]!
+
+  """
+  A list of edges which contains the `Author` and cursor to aid in pagination.
+  """
+  edges: [AuthorEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Author` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Author` edge in the connection."""
+type AuthorEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Author` at the end of the edge."""
+  node: Author
+}
+
+"""Methods to use when ordering `Author`."""
+enum AuthorOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  NAME_ASC
+  NAME_DESC
+}
+
+"""
+A condition to be used against `Author` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input AuthorCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `name` field."""
+  name: String
+}
+
+"""
+A filter to be used against `Author` object types. All fields are combined with a logical ‘and.’
+"""
+input AuthorFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `name` field."""
+  name: StringFilter
+
+  """Filter by the object’s `avatar` relation."""
+  avatar: AssetFolderFilter
+
+  """A related `avatar` exists."""
+  avatarExists: Boolean
+
+  """Checks for all expressions in this list."""
+  and: [AuthorFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [AuthorFilter!]
+
+  """Negates the expression."""
+  not: AuthorFilter
+}
+
+"""A connection to a list of `District` values."""
+type DistrictConnection {
+  """A list of `District` objects."""
+  nodes: [District]!
+
+  """
+  A list of edges which contains the `District` and cursor to aid in pagination.
+  """
+  edges: [DistrictEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `District` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `District` edge in the connection."""
+type DistrictEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `District` at the end of the edge."""
+  node: District
+}
+
+"""Methods to use when ordering `District`."""
+enum DistrictOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  NAME_ASC
+  NAME_DESC
+  ZIP_CODE_ASC
+  ZIP_CODE_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+}
+
+"""
+A condition to be used against `District` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+input DistrictCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `name` field."""
+  name: String
+
+  """Checks for equality with the object’s `zipCode` field."""
+  zipCode: String
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+}
+
+"""
+A filter to be used against `District` object types. All fields are combined with a logical ‘and.’
+"""
+input DistrictFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `name` field."""
+  name: StringFilter
+
+  """Filter by the object’s `zipCode` field."""
+  zipCode: StringFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `region` relation."""
+  region: RegionFilter
+
+  """Checks for all expressions in this list."""
+  and: [DistrictFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [DistrictFilter!]
+
+  """Negates the expression."""
+  not: DistrictFilter
+}
+
+"""A connection to a list of `Page` values."""
+type PageConnection {
+  """A list of `Page` objects."""
+  nodes: [Page]!
+
+  """
+  A list of edges which contains the `Page` and cursor to aid in pagination.
+  """
+  edges: [PageEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Page` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Page` edge in the connection."""
+type PageEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Page` at the end of the edge."""
+  node: Page
+}
+
+"""Methods to use when ordering `Page`."""
+enum PageOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  SLUG_ASC
+  SLUG_DESC
+  STATUS_ASC
+  STATUS_DESC
+  TITLE_ASC
+  TITLE_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+}
+
+"""
+A condition to be used against `Page` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input PageCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `slug` field."""
+  slug: String
+
+  """Checks for equality with the object’s `status` field."""
+  status: PageStatus
+
+  """Checks for equality with the object’s `title` field."""
+  title: String
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+}
+
+"""
+A filter to be used against `Page` object types. All fields are combined with a logical ‘and.’
+"""
+input PageFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `slug` field."""
+  slug: StringFilter
+
+  """Filter by the object’s `status` field."""
+  status: PageStatusFilter
+
+  """Filter by the object’s `title` field."""
+  title: StringFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `pageStatus` relation."""
+  pageStatus: PageStatusFilter
+
+  """Checks for all expressions in this list."""
+  and: [PageFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [PageFilter!]
+
+  """Negates the expression."""
+  not: PageFilter
+}
+
+"""
+A filter to be used against PageStatus fields. All fields are combined with a logical ‘and.’
+"""
+input PageStatusFilter {
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Equal to the specified value."""
+  equalTo: PageStatus
+
+  """Not equal to the specified value."""
+  notEqualTo: PageStatus
+
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: PageStatus
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: PageStatus
+
+  """Included in the specified list."""
+  in: [PageStatus!]
+
+  """Not included in the specified list."""
+  notIn: [PageStatus!]
+
+  """Less than the specified value."""
+  lessThan: PageStatus
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: PageStatus
+
+  """Greater than the specified value."""
+  greaterThan: PageStatus
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: PageStatus
+}
+
+"""A connection to a list of `BlogPost` values."""
+type BlogPostConnection {
+  """A list of `BlogPost` objects."""
+  nodes: [BlogPost]!
+
+  """
+  A list of edges which contains the `BlogPost` and cursor to aid in pagination.
+  """
+  edges: [BlogPostEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `BlogPost` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `BlogPost` edge in the connection."""
+type BlogPostEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `BlogPost` at the end of the edge."""
+  node: BlogPost
+}
+
+"""Methods to use when ordering `BlogPost`."""
+enum BlogPostOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  SLUG_ASC
+  SLUG_DESC
+  TITLE_ASC
+  TITLE_DESC
+  STATUS_ASC
+  STATUS_DESC
+  PUBLISHED_AT_ASC
+  PUBLISHED_AT_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+}
+
+"""
+A condition to be used against `BlogPost` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+input BlogPostCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `slug` field."""
+  slug: String
+
+  """Checks for equality with the object’s `title` field."""
+  title: String
+
+  """Checks for equality with the object’s `status` field."""
+  status: BlogPostStatus
+
+  """Checks for equality with the object’s `publishedAt` field."""
+  publishedAt: Datetime
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+}
+
+"""
+A filter to be used against `BlogPost` object types. All fields are combined with a logical ‘and.’
+"""
+input BlogPostFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `slug` field."""
+  slug: StringFilter
+
+  """Filter by the object’s `title` field."""
+  title: StringFilter
+
+  """Filter by the object’s `status` field."""
+  status: BlogPostStatusFilter
+
+  """Filter by the object’s `publishedAt` field."""
+  publishedAt: DatetimeFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `author` relation."""
+  author: AuthorFilter
+
+  """A related `author` exists."""
+  authorExists: Boolean
+
+  """Filter by the object’s `blogPostStatus` relation."""
+  blogPostStatus: BlogPostStatusFilter
+
+  """Checks for all expressions in this list."""
+  and: [BlogPostFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [BlogPostFilter!]
+
+  """Negates the expression."""
+  not: BlogPostFilter
+}
+
+"""
+A filter to be used against BlogPostStatus fields. All fields are combined with a logical ‘and.’
+"""
+input BlogPostStatusFilter {
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Equal to the specified value."""
+  equalTo: BlogPostStatus
+
+  """Not equal to the specified value."""
+  notEqualTo: BlogPostStatus
+
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: BlogPostStatus
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: BlogPostStatus
+
+  """Included in the specified list."""
+  in: [BlogPostStatus!]
+
+  """Not included in the specified list."""
+  notIn: [BlogPostStatus!]
+
+  """Less than the specified value."""
+  lessThan: BlogPostStatus
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: BlogPostStatus
+
+  """Greater than the specified value."""
+  greaterThan: BlogPostStatus
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: BlogPostStatus
 }
 
 """A connection to a list of `User` values."""
@@ -1193,10 +3165,18 @@ enum UserOrderBy {
   NATURAL
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC
-  ID_ASC
-  ID_DESC
-  USERNAME_ASC
-  USERNAME_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  FIRSTNAME_ASC
+  FIRSTNAME_DESC
+  LASTNAME_ASC
+  LASTNAME_DESC
+  EMAIL_ASC
+  EMAIL_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
 }
 
 """
@@ -1206,42 +3186,216 @@ input UserCondition {
   """Checks for equality with the object’s `id` field."""
   id: UUID
 
-  """Checks for equality with the object’s `username` field."""
-  username: String
+  """Checks for equality with the object’s `firstname` field."""
+  firstname: String
+
+  """Checks for equality with the object’s `lastname` field."""
+  lastname: String
+
+  """Checks for equality with the object’s `email` field."""
+  email: String
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+}
+
+"""A connection to a list of `City` values."""
+type CityConnection {
+  """A list of `City` objects."""
+  nodes: [City]!
+
+  """
+  A list of edges which contains the `City` and cursor to aid in pagination.
+  """
+  edges: [CityEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `City` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `City` edge in the connection."""
+type CityEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `City` at the end of the edge."""
+  node: City
+}
+
+"""Methods to use when ordering `City`."""
+enum CityOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  NAME_ASC
+  NAME_DESC
+  ZIP_CODE_ASC
+  ZIP_CODE_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+}
+
+"""
+A condition to be used against `City` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input CityCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `name` field."""
+  name: String
+
+  """Checks for equality with the object’s `zipCode` field."""
+  zipCode: String
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+}
+
+"""
+A filter to be used against `City` object types. All fields are combined with a logical ‘and.’
+"""
+input CityFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `name` field."""
+  name: StringFilter
+
+  """Filter by the object’s `zipCode` field."""
+  zipCode: StringFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `district` relation."""
+  district: DistrictFilter
+
+  """Checks for all expressions in this list."""
+  and: [CityFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [CityFilter!]
+
+  """Negates the expression."""
+  not: CityFilter
+}
+
+"""A connection to a list of `Address` values."""
+type AddressConnection {
+  """A list of `Address` objects."""
+  nodes: [Address]!
+
+  """
+  A list of edges which contains the `Address` and cursor to aid in pagination.
+  """
+  edges: [AddressEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Address` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Address` edge in the connection."""
+type AddressEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Address` at the end of the edge."""
+  node: Address
+}
+
+"""Methods to use when ordering `Address`."""
+enum AddressOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  FIRST_LINE_ASC
+  FIRST_LINE_DESC
+  ZIP_CODE_ASC
+  ZIP_CODE_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+}
+
+"""
+A condition to be used against `Address` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input AddressCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `firstLine` field."""
+  firstLine: String
+
+  """Checks for equality with the object’s `zipCode` field."""
+  zipCode: String
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+}
+
+"""
+A filter to be used against `Address` object types. All fields are combined with a logical ‘and.’
+"""
+input AddressFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `firstLine` field."""
+  firstLine: StringFilter
+
+  """Filter by the object’s `zipCode` field."""
+  zipCode: StringFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `city` relation."""
+  city: CityFilter
+
+  """Checks for all expressions in this list."""
+  and: [AddressFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [AddressFilter!]
+
+  """Negates the expression."""
+  not: AddressFilter
 }
 
 """
 The root mutation type which contains root level fields which mutate data.
 """
 type Mutation {
-  """Begin the account deletion flow by requesting the confirmation email"""
-  requestAccountDeletion(
-    """
-    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
-    """
-    input: RequestAccountDeletionInput!
-  ): RequestAccountDeletionPayload
-
-  """
-  If you're certain you want to delete your account, use `requestAccountDeletion` to request an account deletion token, and then supply the token through this mutation to complete account deletion.
-  """
-  confirmAccountDeletion(
-    """
-    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
-    """
-    input: ConfirmAccountDeletionInput!
-  ): ConfirmAccountDeletionPayload
-
-  """
-  Once you have received a verification token for your email, you may call this mutation with that token to make your email verified.
-  """
-  verifyEmail(
-    """
-    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
-    """
-    input: VerifyEmailInput!
-  ): VerifyEmailPayload
-
   """Enter your old password and a new password to change your password."""
   changePassword(
     """
@@ -1259,22 +3413,30 @@ type Mutation {
     """
     input: ForgotPasswordInput!
   ): ForgotPasswordPayload
-  generateVideoPresignedPost(
+  createPodcast(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: GenerateVideoPresignedPostInput!
-  ): GenerateVideoPresignedPostPayload
-  getVideoUrl(
+    input: CreatePodcastInput!
+  ): CreatePodcastPayload
+  createVideo(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: GetVideoUrlInput!
-  ): GetVideoUrlPayload
-
-  """
-  Use this mutation to log in to your account; this login uses sessions so you do not need to take further action.
-  """
+    input: CreateVideoInput!
+  ): CreateVideoPayload
+  createArticle(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateArticleInput!
+  ): CreateArticlePayload
+  register(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: RegisterInput!
+  ): RegisterPayload
   login(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -1282,62 +3444,231 @@ type Mutation {
     input: LoginInput!
   ): LoginPayload
 
-  """
-  Use this mutation to logout from your account. Don't forget to clear the client state!
-  """
-  logout: LogoutPayload
-
-  """
-  After triggering forgotPassword, you'll be sent a reset token. Combine this with your user ID and a new password to reset your password.
-  """
-  resetPassword(
+  """Creates a single `Country`."""
+  createCountry(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: ResetPasswordInput!
-  ): ResetPasswordPayload
+    input: CreateCountryInput!
+  ): CreateCountryPayload
+
+  """Creates a single `Region`."""
+  createRegion(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateRegionInput!
+  ): CreateRegionPayload
+
+  """Creates a single `AssetFolder`."""
+  createAssetFolder(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateAssetFolderInput!
+  ): CreateAssetFolderPayload
+
+  """Creates a single `Author`."""
+  createAuthor(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateAuthorInput!
+  ): CreateAuthorPayload
+
+  """Creates a single `District`."""
+  createDistrict(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateDistrictInput!
+  ): CreateDistrictPayload
+
+  """Creates a single `Page`."""
+  createPage(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreatePageInput!
+  ): CreatePagePayload
+
+  """Creates a single `BlogPost`."""
+  createBlogPost(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateBlogPostInput!
+  ): CreateBlogPostPayload
+
+  """Creates a single `User`."""
+  createUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateUserInput!
+  ): CreateUserPayload
+
+  """Creates a single `City`."""
+  createCity(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateCityInput!
+  ): CreateCityPayload
+
+  """Creates a single `Address`."""
+  createAddress(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateAddressInput!
+  ): CreateAddressPayload
+
+  """Creates a single `Asset`."""
+  createAsset(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateAssetInput!
+  ): CreateAssetPayload
+
+  """Updates a single `Country` using its globally unique id and a patch."""
+  updateCountryByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateCountryByNodeIdInput!
+  ): UpdateCountryPayload
+
+  """Updates a single `Country` using a unique key and a patch."""
+  updateCountry(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateCountryInput!
+  ): UpdateCountryPayload
+
+  """Updates a single `Region` using its globally unique id and a patch."""
+  updateRegionByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateRegionByNodeIdInput!
+  ): UpdateRegionPayload
+
+  """Updates a single `Region` using a unique key and a patch."""
+  updateRegion(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateRegionInput!
+  ): UpdateRegionPayload
 
   """
-  Use this mutation to create an account on our system. This may only be used if you are logged out.
+  Updates a single `AssetFolder` using its globally unique id and a patch.
   """
-  register(
+  updateAssetFolderByNodeId(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: RegisterInput!
-  ): RegisterPayload
+    input: UpdateAssetFolderByNodeIdInput!
+  ): UpdateAssetFolderPayload
 
-  """Creates a single `Video`."""
-  createVideo(
+  """Updates a single `AssetFolder` using a unique key and a patch."""
+  updateAssetFolder(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: CreateVideoInput!
-  ): CreateVideoPayload
+    input: UpdateAssetFolderInput!
+  ): UpdateAssetFolderPayload
 
-  """Creates a single `UserEmail`."""
-  createUserEmail(
+  """Updates a single `AssetFolder` using a unique key and a patch."""
+  updateAssetFolderBySlug(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: CreateUserEmailInput!
-  ): CreateUserEmailPayload
+    input: UpdateAssetFolderBySlugInput!
+  ): UpdateAssetFolderPayload
 
-  """Updates a single `Video` using its globally unique id and a patch."""
-  updateVideoByNodeId(
+  """Updates a single `Author` using its globally unique id and a patch."""
+  updateAuthorByNodeId(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: UpdateVideoByNodeIdInput!
-  ): UpdateVideoPayload
+    input: UpdateAuthorByNodeIdInput!
+  ): UpdateAuthorPayload
 
-  """Updates a single `Video` using a unique key and a patch."""
-  updateVideo(
+  """Updates a single `Author` using a unique key and a patch."""
+  updateAuthor(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: UpdateVideoInput!
-  ): UpdateVideoPayload
+    input: UpdateAuthorInput!
+  ): UpdateAuthorPayload
+
+  """Updates a single `District` using its globally unique id and a patch."""
+  updateDistrictByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateDistrictByNodeIdInput!
+  ): UpdateDistrictPayload
+
+  """Updates a single `District` using a unique key and a patch."""
+  updateDistrict(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateDistrictInput!
+  ): UpdateDistrictPayload
+
+  """Updates a single `Page` using its globally unique id and a patch."""
+  updatePageByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdatePageByNodeIdInput!
+  ): UpdatePagePayload
+
+  """Updates a single `Page` using a unique key and a patch."""
+  updatePage(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdatePageInput!
+  ): UpdatePagePayload
+
+  """Updates a single `Page` using a unique key and a patch."""
+  updatePageBySlug(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdatePageBySlugInput!
+  ): UpdatePagePayload
+
+  """Updates a single `BlogPost` using its globally unique id and a patch."""
+  updateBlogPostByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateBlogPostByNodeIdInput!
+  ): UpdateBlogPostPayload
+
+  """Updates a single `BlogPost` using a unique key and a patch."""
+  updateBlogPost(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateBlogPostInput!
+  ): UpdateBlogPostPayload
+
+  """Updates a single `BlogPost` using a unique key and a patch."""
+  updateBlogPostBySlug(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateBlogPostBySlugInput!
+  ): UpdateBlogPostPayload
 
   """Updates a single `User` using its globally unique id and a patch."""
   updateUserByNodeId(
@@ -1356,36 +3687,172 @@ type Mutation {
   ): UpdateUserPayload
 
   """Updates a single `User` using a unique key and a patch."""
-  updateUserByUsername(
+  updateUserByEmail(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: UpdateUserByUsernameInput!
+    input: UpdateUserByEmailInput!
   ): UpdateUserPayload
 
-  """Deletes a single `UserEmail` using its globally unique id."""
-  deleteUserEmailByNodeId(
+  """Updates a single `City` using its globally unique id and a patch."""
+  updateCityByNodeId(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: DeleteUserEmailByNodeIdInput!
-  ): DeleteUserEmailPayload
+    input: UpdateCityByNodeIdInput!
+  ): UpdateCityPayload
 
-  """Deletes a single `UserEmail` using a unique key."""
-  deleteUserEmail(
+  """Updates a single `City` using a unique key and a patch."""
+  updateCity(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: DeleteUserEmailInput!
-  ): DeleteUserEmailPayload
+    input: UpdateCityInput!
+  ): UpdateCityPayload
 
-  """Deletes a single `UserEmail` using a unique key."""
-  deleteUserEmailByUserIdAndEmail(
+  """Updates a single `Address` using its globally unique id and a patch."""
+  updateAddressByNodeId(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: DeleteUserEmailByUserIdAndEmailInput!
-  ): DeleteUserEmailPayload
+    input: UpdateAddressByNodeIdInput!
+  ): UpdateAddressPayload
+
+  """Updates a single `Address` using a unique key and a patch."""
+  updateAddress(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateAddressInput!
+  ): UpdateAddressPayload
+
+  """Updates a single `Asset` using its globally unique id and a patch."""
+  updateAssetByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateAssetByNodeIdInput!
+  ): UpdateAssetPayload
+
+  """Updates a single `Asset` using a unique key and a patch."""
+  updateAsset(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateAssetInput!
+  ): UpdateAssetPayload
+
+  """Deletes a single `Country` using its globally unique id."""
+  deleteCountryByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteCountryByNodeIdInput!
+  ): DeleteCountryPayload
+
+  """Deletes a single `Country` using a unique key."""
+  deleteCountry(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteCountryInput!
+  ): DeleteCountryPayload
+
+  """Deletes a single `Region` using its globally unique id."""
+  deleteRegionByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteRegionByNodeIdInput!
+  ): DeleteRegionPayload
+
+  """Deletes a single `Region` using a unique key."""
+  deleteRegion(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteRegionInput!
+  ): DeleteRegionPayload
+
+  """Deletes a single `AssetFolder` using its globally unique id."""
+  deleteAssetFolderByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteAssetFolderByNodeIdInput!
+  ): DeleteAssetFolderPayload
+
+  """Deletes a single `AssetFolder` using a unique key."""
+  deleteAssetFolder(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteAssetFolderInput!
+  ): DeleteAssetFolderPayload
+
+  """Deletes a single `AssetFolder` using a unique key."""
+  deleteAssetFolderBySlug(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteAssetFolderBySlugInput!
+  ): DeleteAssetFolderPayload
+
+  """Deletes a single `Author` using its globally unique id."""
+  deleteAuthorByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteAuthorByNodeIdInput!
+  ): DeleteAuthorPayload
+
+  """Deletes a single `Author` using a unique key."""
+  deleteAuthor(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteAuthorInput!
+  ): DeleteAuthorPayload
+
+  """Deletes a single `District` using its globally unique id."""
+  deleteDistrictByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteDistrictByNodeIdInput!
+  ): DeleteDistrictPayload
+
+  """Deletes a single `District` using a unique key."""
+  deleteDistrict(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteDistrictInput!
+  ): DeleteDistrictPayload
+
+  """Deletes a single `Page` using its globally unique id."""
+  deletePageByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeletePageByNodeIdInput!
+  ): DeletePagePayload
+
+  """Deletes a single `Page` using a unique key."""
+  deletePage(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeletePageInput!
+  ): DeletePagePayload
+
+  """Deletes a single `Page` using a unique key."""
+  deletePageBySlug(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeletePageBySlugInput!
+  ): DeletePagePayload
 
   """Deletes a single `UserAuthentication` using its globally unique id."""
   deleteUserAuthenticationByNodeId(
@@ -1410,81 +3877,78 @@ type Mutation {
     """
     input: DeleteUserAuthenticationByServiceAndIdentifierInput!
   ): DeleteUserAuthenticationPayload
-}
 
-"""The output of our `requestAccountDeletion` mutation."""
-type RequestAccountDeletionPayload {
-  """
-  The exact same `clientMutationId` that was provided in the mutation input,
-  unchanged and unused. May be used by a client to track mutations.
-  """
-  clientMutationId: String
-  result: Boolean
+  """Deletes a single `BlogPost` using its globally unique id."""
+  deleteBlogPostByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteBlogPostByNodeIdInput!
+  ): DeleteBlogPostPayload
 
-  """
-  Our root query field type. Allows us to run any query from our mutation payload.
-  """
-  query: Query
-}
+  """Deletes a single `BlogPost` using a unique key."""
+  deleteBlogPost(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteBlogPostInput!
+  ): DeleteBlogPostPayload
 
-"""All input for the `requestAccountDeletion` mutation."""
-input RequestAccountDeletionInput {
-  """
-  An arbitrary string value with no semantic meaning. Will be included in the
-  payload verbatim. May be used to track mutations by the client.
-  """
-  clientMutationId: String
-}
+  """Deletes a single `BlogPost` using a unique key."""
+  deleteBlogPostBySlug(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteBlogPostBySlugInput!
+  ): DeleteBlogPostPayload
 
-"""The output of our `confirmAccountDeletion` mutation."""
-type ConfirmAccountDeletionPayload {
-  """
-  The exact same `clientMutationId` that was provided in the mutation input,
-  unchanged and unused. May be used by a client to track mutations.
-  """
-  clientMutationId: String
-  result: Boolean
+  """Deletes a single `City` using its globally unique id."""
+  deleteCityByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteCityByNodeIdInput!
+  ): DeleteCityPayload
 
-  """
-  Our root query field type. Allows us to run any query from our mutation payload.
-  """
-  query: Query
-}
+  """Deletes a single `City` using a unique key."""
+  deleteCity(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteCityInput!
+  ): DeleteCityPayload
 
-"""All input for the `confirmAccountDeletion` mutation."""
-input ConfirmAccountDeletionInput {
-  """
-  An arbitrary string value with no semantic meaning. Will be included in the
-  payload verbatim. May be used to track mutations by the client.
-  """
-  clientMutationId: String
-  token: String!
-}
+  """Deletes a single `Address` using its globally unique id."""
+  deleteAddressByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteAddressByNodeIdInput!
+  ): DeleteAddressPayload
 
-"""The output of our `verifyEmail` mutation."""
-type VerifyEmailPayload {
-  """
-  The exact same `clientMutationId` that was provided in the mutation input,
-  unchanged and unused. May be used by a client to track mutations.
-  """
-  clientMutationId: String
-  result: Boolean
+  """Deletes a single `Address` using a unique key."""
+  deleteAddress(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteAddressInput!
+  ): DeleteAddressPayload
 
-  """
-  Our root query field type. Allows us to run any query from our mutation payload.
-  """
-  query: Query
-}
+  """Deletes a single `Asset` using its globally unique id."""
+  deleteAssetByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteAssetByNodeIdInput!
+  ): DeleteAssetPayload
 
-"""All input for the `verifyEmail` mutation."""
-input VerifyEmailInput {
-  """
-  An arbitrary string value with no semantic meaning. Will be included in the
-  payload verbatim. May be used to track mutations by the client.
-  """
-  clientMutationId: String
-  userEmailId: UUID!
-  token: String!
+  """Deletes a single `Asset` using a unique key."""
+  deleteAsset(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteAssetInput!
+  ): DeleteAssetPayload
 }
 
 """The output of our `changePassword` mutation."""
@@ -1494,7 +3958,7 @@ type ChangePasswordPayload {
   unchanged and unused. May be used by a client to track mutations.
   """
   clientMutationId: String
-  result: Boolean
+  success: Boolean
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
@@ -1537,89 +4001,53 @@ input ForgotPasswordInput {
   email: String!
 }
 
-type GenerateVideoPresignedPostPayload {
-  url: String
-  fields: JSON
-}
-
-input GenerateVideoPresignedPostInput {
-  key: String!
-}
-
-type GetVideoUrlPayload {
-  url: String
-}
-
-input GetVideoUrlInput {
-  videoId: String!
-}
-
-type LoginPayload {
-  accessToken: String
-  refreshToken: String
-  user: User
-}
-
-input LoginInput {
-  username: String!
-  password: String!
-}
-
-type LogoutPayload {
-  success: Boolean
-}
-
-"""The output of our `resetPassword` mutation."""
-type ResetPasswordPayload {
+"""The output of our `createPodcast` mutation."""
+type CreatePodcastPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
   unchanged and unused. May be used by a client to track mutations.
   """
   clientMutationId: String
+  result: Podcast
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
   """
   query: Query
-  success: Boolean
+
+  """An edge for our `Podcast`. May be used by Relay 1."""
+  podcastEdge(
+    """The method to use when ordering `Podcast`."""
+    orderBy: [PodcastOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): PodcastEdge
+
+  """Reads a single `Asset` that is related to this `Podcast`."""
+  podcast: Asset
 }
 
-"""All input for the `resetPassword` mutation."""
-input ResetPasswordInput {
+"""All input for the `createPodcast` mutation."""
+input CreatePodcastInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  userId: UUID!
-  resetToken: String!
-  newPassword: String!
+  title: String
+  durationInSeconds: Int
+  isATool: Boolean
+  imageId: UUID
+  podcastId: UUID
+  transcript: String
 }
 
-type RegisterPayload {
-  user: User!
-  accessToken: String
-  refreshToken: String
-}
-
-input RegisterInput {
-  username: String!
-  email: String!
-  password: String!
-  name: String
-  avatarUrl: String
-}
-
-"""The output of our create `Video` mutation."""
+"""The output of our `createVideo` mutation."""
 type CreateVideoPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
   unchanged and unused. May be used by a client to track mutations.
   """
   clientMutationId: String
-
-  """The `Video` that was created by this mutation."""
-  video: Video
+  result: Video
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
@@ -1631,102 +4059,645 @@ type CreateVideoPayload {
     """The method to use when ordering `Video`."""
     orderBy: [VideoOrderBy!]! = [PRIMARY_KEY_ASC]
   ): VideoEdge
-
-  """Reads a single `User` that is related to this `Video`."""
-  user: User
 }
 
-"""All input for the create `Video` mutation."""
+"""All input for the `createVideo` mutation."""
 input CreateVideoInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-
-  """The `Video` to be created by this mutation."""
-  video: VideoInput!
+  title: String
+  durationInSeconds: Int
+  isATool: Boolean
+  imageId: UUID
+  vimeoId: String
+  transcript: String
 }
 
-"""An input for mutations affecting `Video`"""
-input VideoInput {
-  videoUrl: String!
-  title: String!
-  userId: UUID
-}
-
-"""The output of our create `UserEmail` mutation."""
-type CreateUserEmailPayload {
+"""The output of our `createArticle` mutation."""
+type CreateArticlePayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
   unchanged and unused. May be used by a client to track mutations.
   """
   clientMutationId: String
-
-  """The `UserEmail` that was created by this mutation."""
-  userEmail: UserEmail
+  result: Article
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
   """
   query: Query
 
-  """An edge for our `UserEmail`. May be used by Relay 1."""
-  userEmailEdge(
-    """The method to use when ordering `UserEmail`."""
-    orderBy: [UserEmailOrderBy!]! = [PRIMARY_KEY_ASC]
-  ): UserEmailEdge
-
-  """Reads a single `User` that is related to this `UserEmail`."""
-  user: User
+  """An edge for our `Article`. May be used by Relay 1."""
+  articleEdge(
+    """The method to use when ordering `Article`."""
+    orderBy: [ArticleOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): ArticleEdge
 }
 
-"""All input for the create `UserEmail` mutation."""
-input CreateUserEmailInput {
+"""All input for the `createArticle` mutation."""
+input CreateArticleInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  title: String
+  durationInSeconds: Int
+  isATool: Boolean
+  imageId: UUID
+  body: JSON
+}
+
+type RegisterPayload {
+  user: User
+  accessToken: String
+  refreshToken: String
+  query: Query
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+}
+
+type LoginPayload {
+  user: User
+  accessToken: String
+  refreshToken: String
+  query: Query
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+"""The output of our create `Country` mutation."""
+type CreateCountryPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Country` that was created by this mutation."""
+  country: Country
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Country`. May be used by Relay 1."""
+  countryEdge(
+    """The method to use when ordering `Country`."""
+    orderBy: [CountryOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): CountryEdge
+}
+
+"""All input for the create `Country` mutation."""
+input CreateCountryInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
 
-  """The `UserEmail` to be created by this mutation."""
-  userEmail: UserEmailInput!
+  """The `Country` to be created by this mutation."""
+  country: CountryInput!
 }
 
-"""An input for mutations affecting `UserEmail`"""
-input UserEmailInput {
+"""An input for mutations affecting `Country`"""
+input CountryInput {
+  name: String!
+}
+
+"""The output of our create `Region` mutation."""
+type CreateRegionPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Region` that was created by this mutation."""
+  region: Region
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Region`. May be used by Relay 1."""
+  regionEdge(
+    """The method to use when ordering `Region`."""
+    orderBy: [RegionOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): RegionEdge
+
+  """Reads a single `Country` that is related to this `Region`."""
+  country: Country
+}
+
+"""All input for the create `Region` mutation."""
+input CreateRegionInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Region` to be created by this mutation."""
+  region: RegionInput!
+}
+
+"""An input for mutations affecting `Region`"""
+input RegionInput {
+  name: String!
+  countryId: UUID!
+}
+
+"""The output of our create `AssetFolder` mutation."""
+type CreateAssetFolderPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `AssetFolder` that was created by this mutation."""
+  assetFolder: AssetFolder
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `AssetFolder`. May be used by Relay 1."""
+  assetFolderEdge(
+    """The method to use when ordering `AssetFolder`."""
+    orderBy: [AssetFolderOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): AssetFolderEdge
+
+  """Reads a single `AssetFolder` that is related to this `AssetFolder`."""
+  parent: AssetFolder
+}
+
+"""All input for the create `AssetFolder` mutation."""
+input CreateAssetFolderInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `AssetFolder` to be created by this mutation."""
+  assetFolder: AssetFolderInput!
+}
+
+"""An input for mutations affecting `AssetFolder`"""
+input AssetFolderInput {
+  name: String!
+  parentId: UUID
+}
+
+"""The output of our create `Author` mutation."""
+type CreateAuthorPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Author` that was created by this mutation."""
+  author: Author
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Author`. May be used by Relay 1."""
+  authorEdge(
+    """The method to use when ordering `Author`."""
+    orderBy: [AuthorOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): AuthorEdge
+
+  """Reads a single `AssetFolder` that is related to this `Author`."""
+  avatar: AssetFolder
+}
+
+"""All input for the create `Author` mutation."""
+input CreateAuthorInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Author` to be created by this mutation."""
+  author: AuthorInput!
+}
+
+"""An input for mutations affecting `Author`"""
+input AuthorInput {
+  """The name of the author."""
+  name: String!
+
+  """The avatar of the author."""
+  avatarId: UUID
+
+  """The title of the author."""
+  title: String
+}
+
+"""The output of our create `District` mutation."""
+type CreateDistrictPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `District` that was created by this mutation."""
+  district: District
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `District`. May be used by Relay 1."""
+  districtEdge(
+    """The method to use when ordering `District`."""
+    orderBy: [DistrictOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): DistrictEdge
+
+  """Reads a single `Region` that is related to this `District`."""
+  region: Region
+}
+
+"""All input for the create `District` mutation."""
+input CreateDistrictInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `District` to be created by this mutation."""
+  district: DistrictInput!
+}
+
+"""An input for mutations affecting `District`"""
+input DistrictInput {
+  name: String!
+  zipCode: String!
+  regionId: UUID!
+}
+
+"""The output of our create `Page` mutation."""
+type CreatePagePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Page` that was created by this mutation."""
+  page: Page
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Page`. May be used by Relay 1."""
+  pageEdge(
+    """The method to use when ordering `Page`."""
+    orderBy: [PageOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): PageEdge
+}
+
+"""All input for the create `Page` mutation."""
+input CreatePageInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Page` to be created by this mutation."""
+  page: PageInput!
+}
+
+"""An input for mutations affecting `Page`"""
+input PageInput {
+  """The status of the page."""
+  status: PageStatus
+
+  """The title of the page."""
+  title: String!
+
+  """The content of the page in rich text."""
+  content: JSON
+}
+
+"""The output of our create `BlogPost` mutation."""
+type CreateBlogPostPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `BlogPost` that was created by this mutation."""
+  blogPost: BlogPost
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `BlogPost`. May be used by Relay 1."""
+  blogPostEdge(
+    """The method to use when ordering `BlogPost`."""
+    orderBy: [BlogPostOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): BlogPostEdge
+
+  """Reads a single `Author` that is related to this `BlogPost`."""
+  author: Author
+}
+
+"""All input for the create `BlogPost` mutation."""
+input CreateBlogPostInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `BlogPost` to be created by this mutation."""
+  blogPost: BlogPostInput!
+}
+
+"""An input for mutations affecting `BlogPost`"""
+input BlogPostInput {
+  """The title of the blog post."""
+  title: String!
+
+  """The content of the blog post in rich text."""
+  content: JSON
+
+  """The status of the blog post."""
+  status: BlogPostStatus
+
+  """The author of the blog post."""
+  authorId: UUID
+
+  """The date and time the blog post was published."""
+  publishedAt: Datetime
+}
+
+"""The output of our create `User` mutation."""
+type CreateUserPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `User` that was created by this mutation."""
+  user: User
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `User`. May be used by Relay 1."""
+  userEdge(
+    """The method to use when ordering `User`."""
+    orderBy: [UserOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): UserEdge
+}
+
+"""All input for the create `User` mutation."""
+input CreateUserInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `User` to be created by this mutation."""
+  user: UserInput!
+}
+
+"""An input for mutations affecting `User`"""
+input UserInput {
+  firstname: String
+  lastname: String
+
   """The users email address, in `a@b.c` format."""
   email: String!
 }
 
-"""The output of our update `Video` mutation."""
-type UpdateVideoPayload {
+"""The output of our create `City` mutation."""
+type CreateCityPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
   unchanged and unused. May be used by a client to track mutations.
   """
   clientMutationId: String
 
-  """The `Video` that was updated by this mutation."""
-  video: Video
+  """The `City` that was created by this mutation."""
+  city: City
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
   """
   query: Query
 
-  """An edge for our `Video`. May be used by Relay 1."""
-  videoEdge(
-    """The method to use when ordering `Video`."""
-    orderBy: [VideoOrderBy!]! = [PRIMARY_KEY_ASC]
-  ): VideoEdge
+  """An edge for our `City`. May be used by Relay 1."""
+  cityEdge(
+    """The method to use when ordering `City`."""
+    orderBy: [CityOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): CityEdge
 
-  """Reads a single `User` that is related to this `Video`."""
-  user: User
+  """Reads a single `District` that is related to this `City`."""
+  district: District
 }
 
-"""All input for the `updateVideoByNodeId` mutation."""
-input UpdateVideoByNodeIdInput {
+"""All input for the create `City` mutation."""
+input CreateCityInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `City` to be created by this mutation."""
+  city: CityInput!
+}
+
+"""An input for mutations affecting `City`"""
+input CityInput {
+  name: String!
+  zipCode: String!
+  latitude: Float!
+  longitude: Float!
+  districtId: UUID!
+}
+
+"""The output of our create `Address` mutation."""
+type CreateAddressPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Address` that was created by this mutation."""
+  address: Address
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Address`. May be used by Relay 1."""
+  addressEdge(
+    """The method to use when ordering `Address`."""
+    orderBy: [AddressOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): AddressEdge
+
+  """Reads a single `City` that is related to this `Address`."""
+  city: City
+}
+
+"""All input for the create `Address` mutation."""
+input CreateAddressInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Address` to be created by this mutation."""
+  address: AddressInput!
+}
+
+"""An input for mutations affecting `Address`"""
+input AddressInput {
+  firstLine: String!
+  secondLine: String
+  zipCode: String!
+  latitude: Float!
+  longitude: Float!
+  cityId: UUID!
+  formattedAddress: String!
+}
+
+"""The output of our create `Asset` mutation."""
+type CreateAssetPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Asset` that was created by this mutation."""
+  asset: Asset
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Asset`. May be used by Relay 1."""
+  assetEdge(
+    """The method to use when ordering `Asset`."""
+    orderBy: [AssetOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): AssetEdge
+
+  """Reads a single `AssetFolder` that is related to this `Asset`."""
+  assetFolder: AssetFolder
+}
+
+"""All input for the create `Asset` mutation."""
+input CreateAssetInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Asset` to be created by this mutation."""
+  asset: AssetInput!
+}
+
+"""An input for mutations affecting `Asset`"""
+input AssetInput {
+  """The name of the asset."""
+  name: String!
+
+  """The URL of the asset stored in the S3 bucket."""
+  url: String!
+
+  """The key of the asset."""
+  key: String!
+
+  """The MIME type of the asset."""
+  mimeType: String!
+
+  """The size of the asset in bytes."""
+  size: Int!
+
+  """The formats sm, md, lg, thumbnail of the asset."""
+  formats: JSON
+
+  """The alt attribute of the asset."""
+  alt: String!
+
+  """The caption of the asset."""
+  caption: String
+
+  """The height of the asset in pixels."""
+  height: Int
+
+  """The width of the asset in pixels."""
+  width: Int
+  assetFolderId: UUID
+}
+
+"""The output of our update `Country` mutation."""
+type UpdateCountryPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Country` that was updated by this mutation."""
+  country: Country
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Country`. May be used by Relay 1."""
+  countryEdge(
+    """The method to use when ordering `Country`."""
+    orderBy: [CountryOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): CountryEdge
+}
+
+"""All input for the `updateCountryByNodeId` mutation."""
+input UpdateCountryByNodeIdInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
@@ -1734,26 +4705,25 @@ input UpdateVideoByNodeIdInput {
   clientMutationId: String
 
   """
-  The globally unique `ID` which will identify a single `Video` to be updated.
+  The globally unique `ID` which will identify a single `Country` to be updated.
   """
   nodeId: ID!
 
   """
-  An object where the defined keys will be set on the `Video` being updated.
+  An object where the defined keys will be set on the `Country` being updated.
   """
-  patch: VideoPatch!
+  patch: CountryPatch!
 }
 
 """
-Represents an update to a `Video`. Fields that are set will be updated.
+Represents an update to a `Country`. Fields that are set will be updated.
 """
-input VideoPatch {
-  videoUrl: String
-  title: String
+input CountryPatch {
+  name: String
 }
 
-"""All input for the `updateVideo` mutation."""
-input UpdateVideoInput {
+"""All input for the `updateCountry` mutation."""
+input UpdateCountryInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
@@ -1762,9 +4732,492 @@ input UpdateVideoInput {
   id: UUID!
 
   """
-  An object where the defined keys will be set on the `Video` being updated.
+  An object where the defined keys will be set on the `Country` being updated.
   """
-  patch: VideoPatch!
+  patch: CountryPatch!
+}
+
+"""The output of our update `Region` mutation."""
+type UpdateRegionPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Region` that was updated by this mutation."""
+  region: Region
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Region`. May be used by Relay 1."""
+  regionEdge(
+    """The method to use when ordering `Region`."""
+    orderBy: [RegionOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): RegionEdge
+
+  """Reads a single `Country` that is related to this `Region`."""
+  country: Country
+}
+
+"""All input for the `updateRegionByNodeId` mutation."""
+input UpdateRegionByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Region` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Region` being updated.
+  """
+  patch: RegionPatch!
+}
+
+"""
+Represents an update to a `Region`. Fields that are set will be updated.
+"""
+input RegionPatch {
+  name: String
+  countryId: UUID
+}
+
+"""All input for the `updateRegion` mutation."""
+input UpdateRegionInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: UUID!
+
+  """
+  An object where the defined keys will be set on the `Region` being updated.
+  """
+  patch: RegionPatch!
+}
+
+"""The output of our update `AssetFolder` mutation."""
+type UpdateAssetFolderPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `AssetFolder` that was updated by this mutation."""
+  assetFolder: AssetFolder
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `AssetFolder`. May be used by Relay 1."""
+  assetFolderEdge(
+    """The method to use when ordering `AssetFolder`."""
+    orderBy: [AssetFolderOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): AssetFolderEdge
+
+  """Reads a single `AssetFolder` that is related to this `AssetFolder`."""
+  parent: AssetFolder
+}
+
+"""All input for the `updateAssetFolderByNodeId` mutation."""
+input UpdateAssetFolderByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `AssetFolder` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `AssetFolder` being updated.
+  """
+  patch: AssetFolderPatch!
+}
+
+"""
+Represents an update to a `AssetFolder`. Fields that are set will be updated.
+"""
+input AssetFolderPatch {
+  name: String
+  parentId: UUID
+}
+
+"""All input for the `updateAssetFolder` mutation."""
+input UpdateAssetFolderInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: UUID!
+
+  """
+  An object where the defined keys will be set on the `AssetFolder` being updated.
+  """
+  patch: AssetFolderPatch!
+}
+
+"""All input for the `updateAssetFolderBySlug` mutation."""
+input UpdateAssetFolderBySlugInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  slug: String!
+
+  """
+  An object where the defined keys will be set on the `AssetFolder` being updated.
+  """
+  patch: AssetFolderPatch!
+}
+
+"""The output of our update `Author` mutation."""
+type UpdateAuthorPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Author` that was updated by this mutation."""
+  author: Author
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Author`. May be used by Relay 1."""
+  authorEdge(
+    """The method to use when ordering `Author`."""
+    orderBy: [AuthorOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): AuthorEdge
+
+  """Reads a single `AssetFolder` that is related to this `Author`."""
+  avatar: AssetFolder
+}
+
+"""All input for the `updateAuthorByNodeId` mutation."""
+input UpdateAuthorByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Author` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Author` being updated.
+  """
+  patch: AuthorPatch!
+}
+
+"""
+Represents an update to a `Author`. Fields that are set will be updated.
+"""
+input AuthorPatch {
+  """The name of the author."""
+  name: String
+
+  """The avatar of the author."""
+  avatarId: UUID
+
+  """The title of the author."""
+  title: String
+}
+
+"""All input for the `updateAuthor` mutation."""
+input UpdateAuthorInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """Unique identifier for the author."""
+  id: UUID!
+
+  """
+  An object where the defined keys will be set on the `Author` being updated.
+  """
+  patch: AuthorPatch!
+}
+
+"""The output of our update `District` mutation."""
+type UpdateDistrictPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `District` that was updated by this mutation."""
+  district: District
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `District`. May be used by Relay 1."""
+  districtEdge(
+    """The method to use when ordering `District`."""
+    orderBy: [DistrictOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): DistrictEdge
+
+  """Reads a single `Region` that is related to this `District`."""
+  region: Region
+}
+
+"""All input for the `updateDistrictByNodeId` mutation."""
+input UpdateDistrictByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `District` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `District` being updated.
+  """
+  patch: DistrictPatch!
+}
+
+"""
+Represents an update to a `District`. Fields that are set will be updated.
+"""
+input DistrictPatch {
+  name: String
+  zipCode: String
+  regionId: UUID
+}
+
+"""All input for the `updateDistrict` mutation."""
+input UpdateDistrictInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: UUID!
+
+  """
+  An object where the defined keys will be set on the `District` being updated.
+  """
+  patch: DistrictPatch!
+}
+
+"""The output of our update `Page` mutation."""
+type UpdatePagePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Page` that was updated by this mutation."""
+  page: Page
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Page`. May be used by Relay 1."""
+  pageEdge(
+    """The method to use when ordering `Page`."""
+    orderBy: [PageOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): PageEdge
+}
+
+"""All input for the `updatePageByNodeId` mutation."""
+input UpdatePageByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Page` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Page` being updated.
+  """
+  patch: PagePatch!
+}
+
+"""Represents an update to a `Page`. Fields that are set will be updated."""
+input PagePatch {
+  """The status of the page."""
+  status: PageStatus
+
+  """The title of the page."""
+  title: String
+
+  """The content of the page in rich text."""
+  content: JSON
+}
+
+"""All input for the `updatePage` mutation."""
+input UpdatePageInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """Unique identifier for the page."""
+  id: UUID!
+
+  """
+  An object where the defined keys will be set on the `Page` being updated.
+  """
+  patch: PagePatch!
+}
+
+"""All input for the `updatePageBySlug` mutation."""
+input UpdatePageBySlugInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The slug of the page that is used in the URL."""
+  slug: String!
+
+  """
+  An object where the defined keys will be set on the `Page` being updated.
+  """
+  patch: PagePatch!
+}
+
+"""The output of our update `BlogPost` mutation."""
+type UpdateBlogPostPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `BlogPost` that was updated by this mutation."""
+  blogPost: BlogPost
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `BlogPost`. May be used by Relay 1."""
+  blogPostEdge(
+    """The method to use when ordering `BlogPost`."""
+    orderBy: [BlogPostOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): BlogPostEdge
+
+  """Reads a single `Author` that is related to this `BlogPost`."""
+  author: Author
+}
+
+"""All input for the `updateBlogPostByNodeId` mutation."""
+input UpdateBlogPostByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `BlogPost` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `BlogPost` being updated.
+  """
+  patch: BlogPostPatch!
+}
+
+"""
+Represents an update to a `BlogPost`. Fields that are set will be updated.
+"""
+input BlogPostPatch {
+  """The title of the blog post."""
+  title: String
+
+  """The content of the blog post in rich text."""
+  content: JSON
+
+  """The status of the blog post."""
+  status: BlogPostStatus
+
+  """The author of the blog post."""
+  authorId: UUID
+
+  """The date and time the blog post was published."""
+  publishedAt: Datetime
+}
+
+"""All input for the `updateBlogPost` mutation."""
+input UpdateBlogPostInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """Unique identifier for the blog post."""
+  id: UUID!
+
+  """
+  An object where the defined keys will be set on the `BlogPost` being updated.
+  """
+  patch: BlogPostPatch!
+}
+
+"""All input for the `updateBlogPostBySlug` mutation."""
+input UpdateBlogPostBySlugInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The slug of the blog post that is used in the URL."""
+  slug: String!
+
+  """
+  An object where the defined keys will be set on the `BlogPost` being updated.
+  """
+  patch: BlogPostPatch!
 }
 
 """The output of our update `User` mutation."""
@@ -1811,11 +5264,11 @@ input UpdateUserByNodeIdInput {
 
 """Represents an update to a `User`. Fields that are set will be updated."""
 input UserPatch {
-  """Public-facing username (or 'handle') of the user."""
-  username: String
+  firstname: String
+  lastname: String
 
-  """Public-facing name (or pseudonym) of the user."""
-  name: String
+  """The users email address, in `a@b.c` format."""
+  email: String
 
   """Optional avatar URL."""
   avatarUrl: String
@@ -1838,16 +5291,16 @@ input UpdateUserInput {
   patch: UserPatch!
 }
 
-"""All input for the `updateUserByUsername` mutation."""
-input UpdateUserByUsernameInput {
+"""All input for the `updateUserByEmail` mutation."""
+input UpdateUserByEmailInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
 
-  """Public-facing username (or 'handle') of the user."""
-  username: String!
+  """The users email address, in `a@b.c` format."""
+  email: String!
 
   """
   An object where the defined keys will be set on the `User` being updated.
@@ -1855,35 +5308,34 @@ input UpdateUserByUsernameInput {
   patch: UserPatch!
 }
 
-"""The output of our delete `UserEmail` mutation."""
-type DeleteUserEmailPayload {
+"""The output of our update `City` mutation."""
+type UpdateCityPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
   unchanged and unused. May be used by a client to track mutations.
   """
   clientMutationId: String
 
-  """The `UserEmail` that was deleted by this mutation."""
-  userEmail: UserEmail
-  deletedUserEmailNodeId: ID
+  """The `City` that was updated by this mutation."""
+  city: City
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
   """
   query: Query
 
-  """An edge for our `UserEmail`. May be used by Relay 1."""
-  userEmailEdge(
-    """The method to use when ordering `UserEmail`."""
-    orderBy: [UserEmailOrderBy!]! = [PRIMARY_KEY_ASC]
-  ): UserEmailEdge
+  """An edge for our `City`. May be used by Relay 1."""
+  cityEdge(
+    """The method to use when ordering `City`."""
+    orderBy: [CityOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): CityEdge
 
-  """Reads a single `User` that is related to this `UserEmail`."""
-  user: User
+  """Reads a single `District` that is related to this `City`."""
+  district: District
 }
 
-"""All input for the `deleteUserEmailByNodeId` mutation."""
-input DeleteUserEmailByNodeIdInput {
+"""All input for the `updateCityByNodeId` mutation."""
+input UpdateCityByNodeIdInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
@@ -1891,13 +5343,251 @@ input DeleteUserEmailByNodeIdInput {
   clientMutationId: String
 
   """
-  The globally unique `ID` which will identify a single `UserEmail` to be deleted.
+  The globally unique `ID` which will identify a single `City` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `City` being updated.
+  """
+  patch: CityPatch!
+}
+
+"""Represents an update to a `City`. Fields that are set will be updated."""
+input CityPatch {
+  name: String
+  zipCode: String
+  latitude: Float
+  longitude: Float
+  districtId: UUID
+}
+
+"""All input for the `updateCity` mutation."""
+input UpdateCityInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: UUID!
+
+  """
+  An object where the defined keys will be set on the `City` being updated.
+  """
+  patch: CityPatch!
+}
+
+"""The output of our update `Address` mutation."""
+type UpdateAddressPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Address` that was updated by this mutation."""
+  address: Address
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Address`. May be used by Relay 1."""
+  addressEdge(
+    """The method to use when ordering `Address`."""
+    orderBy: [AddressOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): AddressEdge
+
+  """Reads a single `City` that is related to this `Address`."""
+  city: City
+}
+
+"""All input for the `updateAddressByNodeId` mutation."""
+input UpdateAddressByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Address` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Address` being updated.
+  """
+  patch: AddressPatch!
+}
+
+"""
+Represents an update to a `Address`. Fields that are set will be updated.
+"""
+input AddressPatch {
+  firstLine: String
+  secondLine: String
+  zipCode: String
+  latitude: Float
+  longitude: Float
+  cityId: UUID
+  formattedAddress: String
+}
+
+"""All input for the `updateAddress` mutation."""
+input UpdateAddressInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: UUID!
+
+  """
+  An object where the defined keys will be set on the `Address` being updated.
+  """
+  patch: AddressPatch!
+}
+
+"""The output of our update `Asset` mutation."""
+type UpdateAssetPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Asset` that was updated by this mutation."""
+  asset: Asset
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Asset`. May be used by Relay 1."""
+  assetEdge(
+    """The method to use when ordering `Asset`."""
+    orderBy: [AssetOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): AssetEdge
+
+  """Reads a single `AssetFolder` that is related to this `Asset`."""
+  assetFolder: AssetFolder
+}
+
+"""All input for the `updateAssetByNodeId` mutation."""
+input UpdateAssetByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Asset` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Asset` being updated.
+  """
+  patch: AssetPatch!
+}
+
+"""
+Represents an update to a `Asset`. Fields that are set will be updated.
+"""
+input AssetPatch {
+  """The name of the asset."""
+  name: String
+
+  """The URL of the asset stored in the S3 bucket."""
+  url: String
+
+  """The key of the asset."""
+  key: String
+
+  """The MIME type of the asset."""
+  mimeType: String
+
+  """The size of the asset in bytes."""
+  size: Int
+
+  """The formats sm, md, lg, thumbnail of the asset."""
+  formats: JSON
+
+  """The alt attribute of the asset."""
+  alt: String
+
+  """The caption of the asset."""
+  caption: String
+
+  """The height of the asset in pixels."""
+  height: Int
+
+  """The width of the asset in pixels."""
+  width: Int
+  assetFolderId: UUID
+}
+
+"""All input for the `updateAsset` mutation."""
+input UpdateAssetInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """Unique identifier for the asset."""
+  id: UUID!
+
+  """
+  An object where the defined keys will be set on the `Asset` being updated.
+  """
+  patch: AssetPatch!
+}
+
+"""The output of our delete `Country` mutation."""
+type DeleteCountryPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Country` that was deleted by this mutation."""
+  country: Country
+  deletedCountryNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Country`. May be used by Relay 1."""
+  countryEdge(
+    """The method to use when ordering `Country`."""
+    orderBy: [CountryOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): CountryEdge
+}
+
+"""All input for the `deleteCountryByNodeId` mutation."""
+input DeleteCountryByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Country` to be deleted.
   """
   nodeId: ID!
 }
 
-"""All input for the `deleteUserEmail` mutation."""
-input DeleteUserEmailInput {
+"""All input for the `deleteCountry` mutation."""
+input DeleteCountryInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
@@ -1906,17 +5596,282 @@ input DeleteUserEmailInput {
   id: UUID!
 }
 
-"""All input for the `deleteUserEmailByUserIdAndEmail` mutation."""
-input DeleteUserEmailByUserIdAndEmailInput {
+"""The output of our delete `Region` mutation."""
+type DeleteRegionPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Region` that was deleted by this mutation."""
+  region: Region
+  deletedRegionNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Region`. May be used by Relay 1."""
+  regionEdge(
+    """The method to use when ordering `Region`."""
+    orderBy: [RegionOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): RegionEdge
+
+  """Reads a single `Country` that is related to this `Region`."""
+  country: Country
+}
+
+"""All input for the `deleteRegionByNodeId` mutation."""
+input DeleteRegionByNodeIdInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  userId: UUID!
 
-  """The users email address, in `a@b.c` format."""
-  email: String!
+  """
+  The globally unique `ID` which will identify a single `Region` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteRegion` mutation."""
+input DeleteRegionInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: UUID!
+}
+
+"""The output of our delete `AssetFolder` mutation."""
+type DeleteAssetFolderPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `AssetFolder` that was deleted by this mutation."""
+  assetFolder: AssetFolder
+  deletedAssetFolderNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `AssetFolder`. May be used by Relay 1."""
+  assetFolderEdge(
+    """The method to use when ordering `AssetFolder`."""
+    orderBy: [AssetFolderOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): AssetFolderEdge
+
+  """Reads a single `AssetFolder` that is related to this `AssetFolder`."""
+  parent: AssetFolder
+}
+
+"""All input for the `deleteAssetFolderByNodeId` mutation."""
+input DeleteAssetFolderByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `AssetFolder` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteAssetFolder` mutation."""
+input DeleteAssetFolderInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: UUID!
+}
+
+"""All input for the `deleteAssetFolderBySlug` mutation."""
+input DeleteAssetFolderBySlugInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  slug: String!
+}
+
+"""The output of our delete `Author` mutation."""
+type DeleteAuthorPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Author` that was deleted by this mutation."""
+  author: Author
+  deletedAuthorNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Author`. May be used by Relay 1."""
+  authorEdge(
+    """The method to use when ordering `Author`."""
+    orderBy: [AuthorOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): AuthorEdge
+
+  """Reads a single `AssetFolder` that is related to this `Author`."""
+  avatar: AssetFolder
+}
+
+"""All input for the `deleteAuthorByNodeId` mutation."""
+input DeleteAuthorByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Author` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteAuthor` mutation."""
+input DeleteAuthorInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """Unique identifier for the author."""
+  id: UUID!
+}
+
+"""The output of our delete `District` mutation."""
+type DeleteDistrictPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `District` that was deleted by this mutation."""
+  district: District
+  deletedDistrictNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `District`. May be used by Relay 1."""
+  districtEdge(
+    """The method to use when ordering `District`."""
+    orderBy: [DistrictOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): DistrictEdge
+
+  """Reads a single `Region` that is related to this `District`."""
+  region: Region
+}
+
+"""All input for the `deleteDistrictByNodeId` mutation."""
+input DeleteDistrictByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `District` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteDistrict` mutation."""
+input DeleteDistrictInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: UUID!
+}
+
+"""The output of our delete `Page` mutation."""
+type DeletePagePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Page` that was deleted by this mutation."""
+  page: Page
+  deletedPageNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Page`. May be used by Relay 1."""
+  pageEdge(
+    """The method to use when ordering `Page`."""
+    orderBy: [PageOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): PageEdge
+}
+
+"""All input for the `deletePageByNodeId` mutation."""
+input DeletePageByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Page` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deletePage` mutation."""
+input DeletePageInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """Unique identifier for the page."""
+  id: UUID!
+}
+
+"""All input for the `deletePageBySlug` mutation."""
+input DeletePageBySlugInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The slug of the page that is used in the URL."""
+  slug: String!
 }
 
 """The output of our delete `UserAuthentication` mutation."""
@@ -1985,4 +5940,224 @@ input DeleteUserAuthenticationByServiceAndIdentifierInput {
 
   """A unique identifier for the user within the login service."""
   identifier: String!
+}
+
+"""The output of our delete `BlogPost` mutation."""
+type DeleteBlogPostPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `BlogPost` that was deleted by this mutation."""
+  blogPost: BlogPost
+  deletedBlogPostNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `BlogPost`. May be used by Relay 1."""
+  blogPostEdge(
+    """The method to use when ordering `BlogPost`."""
+    orderBy: [BlogPostOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): BlogPostEdge
+
+  """Reads a single `Author` that is related to this `BlogPost`."""
+  author: Author
+}
+
+"""All input for the `deleteBlogPostByNodeId` mutation."""
+input DeleteBlogPostByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `BlogPost` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteBlogPost` mutation."""
+input DeleteBlogPostInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """Unique identifier for the blog post."""
+  id: UUID!
+}
+
+"""All input for the `deleteBlogPostBySlug` mutation."""
+input DeleteBlogPostBySlugInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The slug of the blog post that is used in the URL."""
+  slug: String!
+}
+
+"""The output of our delete `City` mutation."""
+type DeleteCityPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `City` that was deleted by this mutation."""
+  city: City
+  deletedCityNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `City`. May be used by Relay 1."""
+  cityEdge(
+    """The method to use when ordering `City`."""
+    orderBy: [CityOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): CityEdge
+
+  """Reads a single `District` that is related to this `City`."""
+  district: District
+}
+
+"""All input for the `deleteCityByNodeId` mutation."""
+input DeleteCityByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `City` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteCity` mutation."""
+input DeleteCityInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: UUID!
+}
+
+"""The output of our delete `Address` mutation."""
+type DeleteAddressPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Address` that was deleted by this mutation."""
+  address: Address
+  deletedAddressNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Address`. May be used by Relay 1."""
+  addressEdge(
+    """The method to use when ordering `Address`."""
+    orderBy: [AddressOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): AddressEdge
+
+  """Reads a single `City` that is related to this `Address`."""
+  city: City
+}
+
+"""All input for the `deleteAddressByNodeId` mutation."""
+input DeleteAddressByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Address` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteAddress` mutation."""
+input DeleteAddressInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: UUID!
+}
+
+"""The output of our delete `Asset` mutation."""
+type DeleteAssetPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Asset` that was deleted by this mutation."""
+  asset: Asset
+  deletedAssetNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Asset`. May be used by Relay 1."""
+  assetEdge(
+    """The method to use when ordering `Asset`."""
+    orderBy: [AssetOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): AssetEdge
+
+  """Reads a single `AssetFolder` that is related to this `Asset`."""
+  assetFolder: AssetFolder
+}
+
+"""All input for the `deleteAssetByNodeId` mutation."""
+input DeleteAssetByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Asset` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteAsset` mutation."""
+input DeleteAssetInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """Unique identifier for the asset."""
+  id: UUID!
 }

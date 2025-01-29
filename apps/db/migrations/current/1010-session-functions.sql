@@ -10,7 +10,7 @@
 -- have put it in hidd to get the same effect more easily, but it's often
 -- useful to un-omit it to ease debugging auth issues.
 create function publ.current_session_id() returns uuid as $$
-  select nullif(pg_catalog.current_setting('jwt.claims.sub', true), '')::uuid;
+  select nullif(pg_catalog.current_setting('jwt.claims.sid', true), '')::uuid;
 $$ language sql stable;
 comment on function publ.current_session_id() is
   E'Handy method to get the current session ID.';
@@ -32,13 +32,13 @@ grant execute on function publ.current_session_id to :DATABASE_VISITOR;
  *
  * The below implementation is more secure than simply indicating the user_id
  * directly: even if an SQL injection vulnerability were to allow a user to set
- * their `jwt.claims.session_id` to another value, it would take them many
+ * their `jwt.claims.sid` to another value, it would take them many
  * millenia to be able to correctly guess someone else's session id (since it's
  * a cryptographically secure random value that is kept secret). This makes
  * impersonating another user virtually impossible.
  */
 create function publ.current_user_id() returns uuid as $$
-  select user_id from priv.sessions where uuid = publ.current_session_id();
+  select nullif(pg_catalog.current_setting('jwt.claims.sub', true), '')::uuid;
 $$ language sql stable security definer set search_path to pg_catalog, public, pg_temp;
 comment on function publ.current_user_id() is
   E'Handy method to get the current user ID for use in RLS policies, etc; in GraphQL, use `currentUser{id}` instead.';

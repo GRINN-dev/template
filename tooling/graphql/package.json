@@ -1,16 +1,17 @@
 {
   "name": "@grinn/graphql",
   "dependencies": {
-    "gql.tada": "^1.8.0"
+    "gql.tada": "^1.8.10"
   },
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "version": "0.1.0",
   "scripts": {
-    "build": "tsup-node src/index.ts",
+    "build": "tsup-node src/index.ts  --dts",
     "dev": "tsup-node src/index.ts --watch --dts"
   },
   "devDependencies": {
-    "tsup": "^8.1.0",
-    "typescript": "^5.5.3"
+    "tsup": "8.3.0",
+    "typescript": "catalog:"
   }
 }

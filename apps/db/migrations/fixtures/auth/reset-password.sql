@@ -20,6 +20,8 @@ begin
 end;
 $$ language plpgsql volatile;
 
+
+
 create function priv.reset_password(user_id uuid, reset_token text, new_password text) returns boolean as $$
 declare
   v_user publ.users;
@@ -66,16 +68,7 @@ begin
 
       -- Revoke the users' sessions
       delete from priv.sessions
-      where sessions.user_id = v_user.id;
-
-      -- Notify user their password was reset
-      perform graphile_worker.add_job(
-        'user__audit',
-        json_build_object(
-          'type', 'reset_password',
-          'user_id', v_user.id,
-          'current_user_id', publ.current_user_id()
-        ));
+      where sessions.user_id = v_user.id;     
 
       return true;
     else

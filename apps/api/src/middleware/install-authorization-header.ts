@@ -1,8 +1,8 @@
 // install authorization header from the access_token cookie
-import { Request, Response, NextFunction, Express } from "express";
+import type { Express, NextFunction, Request, Response } from "express";
 
 const middleware = (req: Request, res: Response, next: NextFunction) => {
-  const accessToken = req.cookies.access_token;
+  const accessToken = req.cookies.access_token as string | undefined;
   if (accessToken) {
     req.headers.authorization = `Bearer ${accessToken}`;
   }

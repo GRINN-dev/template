@@ -1,37 +1,25 @@
 {
-  "name": "create-t3-turbo",
-  "private": true,
-  "engines": {
-    "node": ">=20.11.0"
-  },
+  "name": "bookclub",
+  "version": "1.0.0",
+  "type": "module",
   "scripts": {
-    "build": "dotenv -e ./env/.env -- turbo build",
-    "clean": "git clean -xdf node_modules",
-    "clean:workspaces": "dotenv -e ./env/.env -- turbo clean",
-    "dev": "dotenv -e ./env/.env -- turbo dev --parallel",
-    "format": "dotenv -e ./env/.env -- turbo format --continue -- --cache --cache-location node_modules/.cache/.prettiercache",
-    "format:fix": "dotenv -e ./env/.env -- turbo format --continue -- --write --cache --cache-location node_modules/.cache/.prettiercache",
-    "lint": "dotenv -e ./env/.env -- turbo lint --continue -- --cache --cache-location node_modules/.cache/.eslintcache",
-    "lint:fix": "dotenv -e ./env/.env -- turbo lint --continue -- --fix --cache --cache-location node_modules/.cache/.eslintcache",
-    "lint:ws": "pnpm dlx sherif@latest",
-    "typecheck": "dotenv -e ./env/.env -- turbo typecheck",
-    "init:db": "dotenv -e ./env/.env node ./scripts/init-db.js",
+    "dev": "dotenv -e ./env/.env -- turbo --env-mode=loose dev",
+    "init-db": "dotenv -e ./env/.env -- node --loader ts-node/esm ./scripts/init-db.ts",
     "gm": "dotenv -e ./env/.env -- pnpm --filter db gm",
-    "server:start": "dotenv -e ./env/.env -- pnpm --filter api start",
-    "workers:start": "dotenv -e ./env/.env -- pnpm --filter workers start",
-    "migrate:prod": "dotenv -e ./env/.env.production -- pnpm --filter db gm migrate",
-    "migrate:staging": "dotenv -e ./env/.env.staging -- pnpm --filter db gm migrate",
+    "lint": "dotenv -e ./env/.env -- turbo --env-mode=loose lint",
+    "format": "dotenv -e ./env/.env -- turbo --env-mode=loose format",
     "mobile": "dotenv -e ./env/.env -- pnpm --filter mobile"
   },
   "devDependencies": {
-    "@grinn/prettier-config": "workspace:^0.1.0",
-    "@turbo/gen": "^1.12.5",
-    "prettier": "^3.2.5",
-    "turbo": "^1.12.5",
-    "typescript": "^5.6.3"
+    "@grinn/prettier-config": "workspace:*",
+    "@types/node": "^22.10.2",
+    "@types/pg": "^8.11.10",
+    "dotenv-cli": "^7.4.4",
+    "pg": "^8.13.1",
+    "ts-node": "^10.9.2",
+    "turbo": "^2.3.3",
+    "typescript": "catalog:"
   },
-  "prettier": "@grinn/prettier-config",
-  "dependencies": {
-    "dotenv-cli": "^7.4.1"
-  }
+  "packageManager": "pnpm@9.14.2",
+  "prettier": "@grinn/prettier-config"
 }

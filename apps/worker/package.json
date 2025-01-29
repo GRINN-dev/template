@@ -12,15 +12,17 @@
   "dependencies": {
     "@getbrevo/brevo": "2.2.0",
     "graphile-worker": "^0.16.6",
+    "@react-email/components": "0.0.32",
     "handlebars": "^4.7.8",
-    "puppeteer": "^22.12.1"
+    "puppeteer": "^24.0.0"
   },
   "devDependencies": {
-    "tsup": "^8.1.0",
-    "typescript": "^5.5.3",
-    "@grinn/eslint-config": "workspace:^0.2.0",
-    "@grinn/prettier-config": "workspace:^0.1.0",
-    "@grinn/tsconfig": "workspace:^0.1.0"
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "@grinn/eslint-config": "workspace:*",
+    "@grinn/prettier-config": "workspace:*",
+    "@grinn/tsconfig": "workspace:*",
+    "@grinn/transactional": "workspace:*"
   },
   "eslintConfig": {
     "root": true,

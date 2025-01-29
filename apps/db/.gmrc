@@ -2,31 +2,59 @@
   "pgSettings": {
     "search_path": "publ,priv,hidd,public"
   },
+
   "placeholders": {
     ":DATABASE_VISITOR": "!ENV",
-    ":DATABASE_AUTHENTICATOR": "!ENV",
-    ":DATABASE_AUTHENTICATOR_PASSWORD": "!ENV"
+    ":DATABASE_AUTHENTICATOR": "!ENV"
+    // ":DATABASE_OWNER": "!ENV", -- automatically set
+    // ":DATABASE_NAME": "!ENV", -- automatically set
   },
+
+  /*
+   * Actions allow you to run scripts or commands at certain points in the
+   * migration lifecycle. SQL files are ran against the database directly.
+   * "command" actions are ran with the following environmental variables set:
+   *
+   * - GM_DBURL: the PostgreSQL URL of the database being migrated
+   * - GM_DBNAME: the name of the database from GM_DBURL
+   * - GM_DBUSER: the user from GM_DBURL
+   * - GM_SHADOW: set to 1 if the shadow database is being migrated, left unset
+   *   otherwise
+   *
+   * If "shadow" is unspecified, the actions will run on events to both shadow
+   * and normal databases. If "shadow" is true the action will only run on
+   * actions to the shadow DB, and if false only on actions to the main DB.
+   */
+
+  /*
+   * afterReset: actions executed after a `graphile-migrate reset` command.
+   */
   "afterReset": [
-    "afterReset.sql",
-    {
-      "_": "command",
-      "command": "node scripts/migrate-graphile-worker.js"
-    }
+    "after-reset.sql",
+    // { "_": "command", "command": "graphile-worker --schema-only" },
   ],
+
+  /*
+   * afterAllMigrations: actions executed once all migrations are complete.
+   */
   "afterAllMigrations": [
-    {
-      "_": "command",
-      "shadow": true,
-      "command": "if [ \"$IN_TESTS\" != \"1\" ]; then ./scripts/dump-db; fi"
-    }
+    // {
+    //   "_": "command",
+    //   "shadow": true,
+    //   "command": "if [ \"$IN_TESTS\" != \"1\" ]; then ./scripts/dump-db; fi",
+    // },
   ],
+
+  /*
+   * afterCurrent: actions executed once the current migration has been
+   * evaluated (i.e. in watch mode).
+   */
   "afterCurrent": [
-    {
-      "_": "command",
-      "command": "./scripts/mermerd --runConfig ./scripts/mermerd.config.yaml -c $GM_DBURL"
-    }
+    // {
+    //   "_": "command",
+    //   "shadow": true,
+    //   "command": "if [ \"$IN_TESTS\" = \"1\" ]; then ./scripts/test-seed; fi",
+    // },
   ],
-  "blankMigrationContent": "-- Write your migration here\n-- available snippets are `table`, `enum`, `sqlfn`, `plpgsqlfn`.\n",
   "//generatedWith": "1.4.1"
 }

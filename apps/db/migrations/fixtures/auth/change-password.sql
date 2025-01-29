@@ -32,15 +32,6 @@ begin
       where sessions.user_id = v_user.id
       and sessions.uuid <> publ.current_session_id();
 
-      -- Notify user their password was changed
-      perform graphile_worker.add_job(
-        'user__audit',
-        json_build_object(
-          'type', 'change_password',
-          'user_id', v_user.id,
-          'current_user_id', publ.current_user_id()
-        ));
-
       return true;
     else
       raise exception 'Incorrect password' using errcode = 'CREDS';

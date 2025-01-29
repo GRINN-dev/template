@@ -1,0 +1,16 @@
+{
+  "Id": "Policy1587216857769",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stmt1587216727444",
+      "Action": ["s3:GetBucketLocation", "s3:GetObject", "s3:PutObject"],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::peppsy-local-dev",
+        "arn:aws:s3:::peppsy-local-dev/*"
+      ],
+      "Principal": "*"
+    }
+  ]
+}

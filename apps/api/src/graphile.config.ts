@@ -1,34 +1,33 @@
-import type { Pool } from "pg";
-import { PgSimplifyInflectionPreset } from "@graphile/simplify-inflection";
-import { makePgService } from "postgraphile/adaptors/pg";
-import { PostGraphileAmberPreset } from "postgraphile/presets/amber";
-
-import type {} from "postgraphile/grafserv/express/v4";
+import "graphile-config";
+import "postgraphile";
 
 import { resolve } from "path";
-import type { CookieSerializeOptions } from "cookie";
-import type { JwtPayload } from "jsonwebtoken";
-import { serialize } from "cookie";
-import { verify } from "jsonwebtoken";
+import type { Pool } from "pg";
+import { PgSimplifyInflectionPreset } from "@graphile/simplify-inflection";
+import { SerializeOptions } from "cookie";
+import { JwtPayload, verify } from "jsonwebtoken";
 import { PostGraphileConnectionFilterPreset } from "postgraphile-plugin-connection-filter";
+import { makePgService } from "postgraphile/adaptors/pg";
+import { PostGraphileAmberPreset } from "postgraphile/presets/amber";
 import { makePgSmartTagsFromFilePlugin } from "postgraphile/utils";
 
-import LoginPlugin from "./plugins/login-plugin";
-import LogoutPlugin from "./plugins/logout-plugin";
-import RegisterPlugin from "./plugins/register-plugin";
-import ResetPasswordPlugin from "./plugins/reset-password-plugin";
-import { GenerateVideoPresignedUrl } from "./plugins/s3-presigned-post";
-import { VideoPresignedUrl } from "./plugins/signed-video-url";
+import { LoginMutationPlugin } from "./plugins/login";
+import { RegisterMutationPlugin } from "./plugins/register";
+import { maskError } from "./utils/handle-errors";
+import { setCookies } from "./utils/jwt";
 
 declare global {
   namespace Grafast {
     interface Context {
       rootPgPool: Pool;
-      setCookie: (
+      userId?: string;
+      ipAddr?: string;
+      userAgent?: string;
+      setCookies: (
         cookies: {
           name: string;
           value: string;
-          options?: CookieSerializeOptions;
+          options?: SerializeOptions;
         }[],
       ) => void;
     }
@@ -41,33 +40,13 @@ const TagsFilePlugin = makePgSmartTagsFromFilePlugin(
   resolve(__dirname, "../postgraphile.tags.jsonc"),
 );
 
-type UUID = string;
-
-function uuidOrNull(input: string | number | null | undefined): UUID | null {
-  if (!input) return null;
-  const str = String(input);
-  if (
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-      str,
-    )
-  ) {
-    return str;
-  } else {
-    return null;
-  }
-}
-
 const isDev = process.env.NODE_ENV === "development";
-//const isTest = process.env.NODE_ENV === "test";
-
-interface IPostGraphileOptionsOptions {
-  authPgPool: Pool;
-  rootPgPool?: Pool;
-}
 
 export function getPreset({
   rootPgPool,
-}: IPostGraphileOptionsOptions): GraphileConfig.Preset {
+}: {
+  rootPgPool: Pool;
+}): GraphileConfig.Preset {
   return {
     extends: [
       PostGraphileAmberPreset,
@@ -76,28 +55,31 @@ export function getPreset({
     ],
     pgServices: [
       makePgService({
-        connectionString: process.env.AUTH_DATABASE_URL,
+        connectionString: process.env.AUTHENTICATOR_DATABASE_URL,
         superuserConnectionString: process.env.DATABASE_URL,
         schemas: ["publ"],
         pgSettings(inReq) {
-          const access_token =
+          // we check if an authorization header is present and extract the userId
+          const authorization =
             inReq.expressv4.req.headers?.authorization?.split(" ")[1];
-          let tokenPayload: JwtPayload | null = null;
-          if (access_token) {
+          const token = authorization?.replace("Bearer ", "");
+          let tokenPayload: JwtPayload | undefined = undefined;
+          if (token) {
             try {
               tokenPayload = verify(
-                access_token,
+                token,
                 process.env.ACCESS_TOKEN_SECRET!,
               ) as JwtPayload;
             } catch (e) {
               console.warn("Invalid access token", e);
             }
           }
-          const userId = uuidOrNull(tokenPayload?.sub);
+
           return {
             // Everyone uses the "visitor" role currently
             role: process.env.DATABASE_VISITOR!,
-            "jwt.claims.sub": userId!,
+            "jwt.claims.sub": tokenPayload?.sub,
+            "jwt.claims.sid": tokenPayload?.sid,
           };
         },
       }),
@@ -105,41 +87,50 @@ export function getPreset({
     schema: {
       exportSchemaSDLPath: "../../data/schema.graphql",
       pgMutationPayloadRelations: true,
+      pgForbidSetofFunctionsToReturnNull: false,
     },
 
     grafast: {
       explain: isDev,
-
-      // eslint-disable-next-line no-unused-vars
       async context(requestContext, _args) {
+        const req = requestContext.expressv4?.req;
         const res = requestContext.node?.res;
 
+        // we check if an authorization header is present and extract the userId
+        const authorization = req?.headers?.authorization;
+        const token = authorization?.replace("Bearer ", "");
+        let tokenPayload: JwtPayload | undefined = undefined;
+        if (token) {
+          try {
+            tokenPayload = verify(
+              token,
+              process.env.ACCESS_TOKEN_SECRET!,
+            ) as JwtPayload;
+          } catch (e) {
+            console.warn("Invalid access token", e);
+          }
+        }
         return {
           rootPgPool,
-          setCookie(cookies: { name: string; value: string; options?: any }[]) {
-            if (res) {
-              res.setHeader(
-                "Set-Cookie",
-                cookies.map((cookie) =>
-                  serialize(cookie.name, cookie.value, cookie.options),
-                ),
-              );
-            }
+          setCookies: (cookies) => {
+            setCookies(cookies, res);
           },
+          ipAddr: req?.ip,
+          userAgent: req?.headers["user-agent"],
+          userId: tokenPayload?.sub,
         };
       },
     },
 
-    grafserv: { watch: true },
+    grafserv: {
+      watch: true,
+      maskError,
+    },
     plugins: [
       IdToNodeIdPlugin,
-      GenerateVideoPresignedUrl,
-      VideoPresignedUrl,
       TagsFilePlugin,
-      LoginPlugin,
-      LogoutPlugin,
-      ResetPasswordPlugin,
-      RegisterPlugin,
+      RegisterMutationPlugin,
+      LoginMutationPlugin,
     ],
   };
 }

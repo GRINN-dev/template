@@ -1,0 +1,26 @@
+{
+  "name": "@grinn/transactional",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    ".react-email"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup-node src/index.tsx  --dts --target node20",
+    "dev": "tsup-node src/index.tsx  --dts --target node20 --watch",
+    "export": "email export"
+  },
+  "dependencies": {
+    "@react-email/components": "0.0.32",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "react-email": "3.0.6",
+    "tsup": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "^18"
+  }
+}

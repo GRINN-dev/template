@@ -6,9 +6,9 @@
 create function hidd.logout() returns void as $$
 begin
   -- Delete the session
-  delete from priv.sessions where uuid = hidd.current_session_id();
+  delete from priv.sessions where uuid = publ.current_session_id();
   -- Clear the identifier from the transaction
-  perform set_config('jwt.claims.session_id', '', true);
+  perform set_config('jwt.claims.sid', '', true);
 end;
 $$ language plpgsql security definer volatile set search_path to pg_catalog, public, pg_temp;
 

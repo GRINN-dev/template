@@ -1,69 +1,95 @@
+import type { SerializeOptions } from "cookie";
+import type { Express, Request, Response } from "express";
+import type { JwtPayload } from "jsonwebtoken";
 import { serialize } from "cookie";
-import { Express } from "express";
-import jwtPkg, { JwtPayload } from "jsonwebtoken";
+import jwtPkg from "jsonwebtoken";
 
-import { login } from "../utils/login";
+import { createTokensAndSetCookies } from "../utils/jwt";
+import { getRootPgPool } from "./install-database-pools";
 
 const { verify } = jwtPkg;
 
 export const installRefreshTokenRotation = (app: Express) => {
-  const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
+  const { REFRESH_TOKEN_SECRET } = process.env;
 
-  app.post("/access_token", async (req, res) => {
-    const rootPgPool = app.get("rootPgPool");
-    const refreshToken = req.cookies?.refresh_token || req.body?.refresh_token;
-
+  app.post("/access_token", async (req: Request, res: Response) => {
+    const rootPgPool = getRootPgPool(app);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const refreshToken: string | undefined =
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      req.cookies.refresh_token ?? req.body?.refresh_token;
     if (refreshToken) {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const payload = verify(refreshToken, REFRESH_TOKEN_SECRET!, {
           algorithms: ["HS256"],
         }) as JwtPayload;
-
         // user lookup - if user was deleted, they no longer get a token
-        const { rows } = await rootPgPool.query(
+        const { rows } = await rootPgPool.query<{
+          session_id: string;
+          sub: string;
+        }>(
           ` SELECT uuid as session_id, user_id AS sub FROM priv.sessions 
-            WHERE uuid = $1 and refresh_token = $2
-            LIMIT 1
+          WHERE uuid = $1 and refresh_token = $2
+          LIMIT 1
           `,
-          [payload?.sub, refreshToken],
+          [payload.sid, refreshToken],
         );
+        console.log(rows);
 
-        if (rows.length) {
+        if (rows[0]) {
           const { sub, session_id } = rows[0];
           // go ahead and refresh refresh token while we're here
-          const { accessToken, refreshToken } = await login({
-            payload: {
-              sessionId: session_id,
+          const { accessToken, refreshToken: newRefreshToken } =
+            createTokensAndSetCookies({
               userId: sub,
-            },
-            pool: rootPgPool,
-            setCookie(input: { name: string; value: string; options?: any }[]) {
-              if (res) {
+              sessionId: session_id,
+
+              setCookies: (
+                input: {
+                  name: string;
+                  value: string;
+                  options?: SerializeOptions;
+                }[],
+              ) => {
                 res.setHeader(
                   "Set-Cookie",
                   input.map((cookie) =>
                     serialize(cookie.name, cookie.value, cookie.options),
                   ),
                 );
-              }
-            },
-            at_secret: ACCESS_TOKEN_SECRET!,
-            rt_secret: REFRESH_TOKEN_SECRET!,
-          });
-          return res.send({
+              },
+            });
+
+          // we update the session with the new refresh token
+
+          await rootPgPool.query(
+            ` UPDATE priv.sessions
+              SET refresh_token = $1,
+              ip_address = $3,
+              user_agent = $4
+              WHERE uuid = $2
+            `,
+            [newRefreshToken, session_id, req.ip, req.headers["user-agent"]],
+          );
+
+          res.send({
             ok: true,
             access_token: accessToken,
-            refresh_token: refreshToken,
+            refresh_token: newRefreshToken,
           });
+          return;
         }
       } catch (err) {
         console.error(err);
-        return res
+        res
           .status(401)
           .send({ ok: false, access_token: "", refresh_token: "" });
+        return;
       }
     }
 
-    return res.send({ ok: false, access_token: "", refresh_token: "" });
+    res.send({ ok: false, access_token: "", refresh_token: "" });
+    return;
   });
 };
