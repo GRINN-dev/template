@@ -1188,6 +1188,9 @@ type Query implements Node {
   """Get a single `User`."""
   userByEmail(email: String!): User
 
+  """Get a single `Notification`."""
+  notification(id: UUID!): Notification
+
   """Get a single `Asset`."""
   asset(id: UUID!): Asset
 
@@ -1289,6 +1292,14 @@ type Query implements Node {
     """The globally unique `ID` to be used in selecting a single `User`."""
     nodeId: ID!
   ): User
+
+  """Reads a single `Notification` using its globally unique `ID`."""
+  notificationByNodeId(
+    """
+    The globally unique `ID` to be used in selecting a single `Notification`.
+    """
+    nodeId: ID!
+  ): Notification
 
   """Reads a single `Asset` using its globally unique `ID`."""
   assetByNodeId(
@@ -1772,6 +1783,40 @@ type Query implements Node {
     filter: UserFilter
   ): UserConnection
 
+  """Reads and enables pagination through a set of `Notification`."""
+  notifications(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Notification`."""
+    orderBy: [NotificationOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: NotificationCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: NotificationFilter
+  ): NotificationConnection
+
   """Reads and enables pagination through a set of `Content`."""
   contents(
     """Only read the first `n` values of the set."""
@@ -2035,6 +2080,40 @@ type User implements Node {
     """
     filter: UserAuthenticationFilter
   ): UserAuthenticationConnection!
+
+  """Reads and enables pagination through a set of `Notification`."""
+  notifications(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Notification`."""
+    orderBy: [NotificationOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: NotificationCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: NotificationFilter
+  ): NotificationConnection!
 }
 
 """A connection to a list of `UserAuthentication` values."""
@@ -2159,6 +2238,12 @@ input UserFilter {
   """Some related `userAuthentications` exist."""
   userAuthenticationsExist: Boolean
 
+  """Filter by the object’s `notifications` relation."""
+  notifications: UserToManyNotificationFilter
+
+  """Some related `notifications` exist."""
+  notificationsExist: Boolean
+
   """Checks for all expressions in this list."""
   and: [UserFilter!]
 
@@ -2229,6 +2314,278 @@ input UserToManyUserAuthenticationFilter {
   No related `UserAuthentication` matches the filter criteria. All fields are combined with a logical ‘and.’
   """
   none: UserAuthenticationFilter
+}
+
+"""
+A filter to be used against many `Notification` object types. All fields are combined with a logical ‘and.’
+"""
+input UserToManyNotificationFilter {
+  """
+  Every related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: NotificationFilter
+
+  """
+  Some related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: NotificationFilter
+
+  """
+  No related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: NotificationFilter
+}
+
+"""
+A filter to be used against `Notification` object types. All fields are combined with a logical ‘and.’
+"""
+input NotificationFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `userId` field."""
+  userId: UUIDFilter
+
+  """Filter by the object’s `notificationTemplateId` field."""
+  notificationTemplateId: UUIDFilter
+
+  """Filter by the object’s `status` field."""
+  status: NotificationStatusFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `notificationTemplate` relation."""
+  notificationTemplate: NotificationTemplateFilter
+
+  """A related `notificationTemplate` exists."""
+  notificationTemplateExists: Boolean
+
+  """Filter by the object’s `notificationStatus` relation."""
+  notificationStatus: NotificationStatusFilter
+
+  """Filter by the object’s `user` relation."""
+  user: UserFilter
+
+  """Checks for all expressions in this list."""
+  and: [NotificationFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [NotificationFilter!]
+
+  """Negates the expression."""
+  not: NotificationFilter
+}
+
+"""
+A filter to be used against NotificationStatus fields. All fields are combined with a logical ‘and.’
+"""
+input NotificationStatusFilter {
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Equal to the specified value."""
+  equalTo: NotificationStatus
+
+  """Not equal to the specified value."""
+  notEqualTo: NotificationStatus
+
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: NotificationStatus
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: NotificationStatus
+
+  """Included in the specified list."""
+  in: [NotificationStatus!]
+
+  """Not included in the specified list."""
+  notIn: [NotificationStatus!]
+
+  """Less than the specified value."""
+  lessThan: NotificationStatus
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: NotificationStatus
+
+  """Greater than the specified value."""
+  greaterThan: NotificationStatus
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: NotificationStatus
+}
+
+enum NotificationStatus {
+  """la notification n"a pas encore été envoyée"""
+  NEW
+
+  """la notification a été envoyée"""
+  SENT
+
+  """la notification n"a pas pu être envoyée"""
+  ERROR
+
+  """la notification a été lue"""
+  READ
+}
+
+"""
+A filter to be used against `NotificationTemplate` object types. All fields are combined with a logical ‘and.’
+"""
+input NotificationTemplateFilter {
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `key` field."""
+  key: StringFilter
+
+  """Filter by the object’s `title` field."""
+  title: StringFilter
+
+  """Filter by the object’s `body` field."""
+  body: StringFilter
+
+  """Filter by the object’s `url` field."""
+  url: StringFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `notifications` relation."""
+  notifications: NotificationTemplateToManyNotificationFilter
+
+  """Some related `notifications` exist."""
+  notificationsExist: Boolean
+
+  """Checks for all expressions in this list."""
+  and: [NotificationTemplateFilter!]
+
+  """Checks for any expressions in this list."""
+  or: [NotificationTemplateFilter!]
+
+  """Negates the expression."""
+  not: NotificationTemplateFilter
+}
+
+"""
+A filter to be used against many `Notification` object types. All fields are combined with a logical ‘and.’
+"""
+input NotificationTemplateToManyNotificationFilter {
+  """
+  Every related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: NotificationFilter
+
+  """
+  Some related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: NotificationFilter
+
+  """
+  No related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: NotificationFilter
+}
+
+"""A connection to a list of `Notification` values."""
+type NotificationConnection {
+  """A list of `Notification` objects."""
+  nodes: [Notification]!
+
+  """
+  A list of edges which contains the `Notification` and cursor to aid in pagination.
+  """
+  edges: [NotificationEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Notification` you could get from the connection."""
+  totalCount: Int!
+}
+
+type Notification implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: UUID!
+  userId: UUID!
+  notificationTemplateId: UUID
+  title: String!
+  body: String!
+  picture: String
+  data: JSON
+  status: NotificationStatus!
+  openedAt: Datetime
+  expoTicketId: String
+  createdAt: Datetime!
+  updatedAt: Datetime!
+
+  """Reads a single `User` that is related to this `Notification`."""
+  user: User
+}
+
+"""A `Notification` edge in the connection."""
+type NotificationEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Notification` at the end of the edge."""
+  node: Notification
+}
+
+"""Methods to use when ordering `Notification`."""
+enum NotificationOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  USER_ID_ASC
+  USER_ID_DESC
+  NOTIFICATION_TEMPLATE_ID_ASC
+  NOTIFICATION_TEMPLATE_ID_DESC
+  STATUS_ASC
+  STATUS_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+}
+
+"""
+A condition to be used against `Notification` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input NotificationCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `userId` field."""
+  userId: UUID
+
+  """Checks for equality with the object’s `notificationTemplateId` field."""
+  notificationTemplateId: UUID
+
+  """Checks for equality with the object’s `status` field."""
+  status: NotificationStatus
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
 }
 
 """Blog posts."""
@@ -3604,6 +3961,14 @@ type Mutation {
     input: CreateUserInput!
   ): CreateUserPayload
 
+  """Creates a single `Notification`."""
+  createNotification(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateNotificationInput!
+  ): CreateNotificationPayload
+
   """Creates a single `Asset`."""
   createAsset(
     """
@@ -3805,6 +4170,24 @@ type Mutation {
     """
     input: UpdateUserByEmailInput!
   ): UpdateUserPayload
+
+  """
+  Updates a single `Notification` using its globally unique id and a patch.
+  """
+  updateNotificationByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateNotificationByNodeIdInput!
+  ): UpdateNotificationPayload
+
+  """Updates a single `Notification` using a unique key and a patch."""
+  updateNotification(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateNotificationInput!
+  ): UpdateNotificationPayload
 
   """Updates a single `Asset` using its globally unique id and a patch."""
   updateAssetByNodeId(
@@ -4013,6 +4396,22 @@ type Mutation {
     """
     input: DeleteAddressInput!
   ): DeleteAddressPayload
+
+  """Deletes a single `Notification` using its globally unique id."""
+  deleteNotificationByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteNotificationByNodeIdInput!
+  ): DeleteNotificationPayload
+
+  """Deletes a single `Notification` using a unique key."""
+  deleteNotification(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteNotificationInput!
+  ): DeleteNotificationPayload
 
   """Deletes a single `Asset` using its globally unique id."""
   deleteAssetByNodeId(
@@ -4679,6 +5078,57 @@ input UserInput {
 
   """The users email address, in `a@b.c` format."""
   email: String!
+}
+
+"""The output of our create `Notification` mutation."""
+type CreateNotificationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Notification` that was created by this mutation."""
+  notification: Notification
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Notification`. May be used by Relay 1."""
+  notificationEdge(
+    """The method to use when ordering `Notification`."""
+    orderBy: [NotificationOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): NotificationEdge
+
+  """Reads a single `User` that is related to this `Notification`."""
+  user: User
+}
+
+"""All input for the create `Notification` mutation."""
+input CreateNotificationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Notification` to be created by this mutation."""
+  notification: NotificationInput!
+}
+
+"""An input for mutations affecting `Notification`"""
+input NotificationInput {
+  userId: UUID!
+  notificationTemplateId: UUID
+  title: String!
+  body: String!
+  picture: String
+  data: JSON
+  status: NotificationStatus
+  openedAt: Datetime
+  expoTicketId: String
 }
 
 """The output of our create `Asset` mutation."""
@@ -5536,6 +5986,75 @@ input UpdateUserByEmailInput {
   patch: UserPatch!
 }
 
+"""The output of our update `Notification` mutation."""
+type UpdateNotificationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Notification` that was updated by this mutation."""
+  notification: Notification
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Notification`. May be used by Relay 1."""
+  notificationEdge(
+    """The method to use when ordering `Notification`."""
+    orderBy: [NotificationOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): NotificationEdge
+
+  """Reads a single `User` that is related to this `Notification`."""
+  user: User
+}
+
+"""All input for the `updateNotificationByNodeId` mutation."""
+input UpdateNotificationByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Notification` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Notification` being updated.
+  """
+  patch: NotificationPatch!
+}
+
+"""
+Represents an update to a `Notification`. Fields that are set will be updated.
+"""
+input NotificationPatch {
+  status: NotificationStatus
+  openedAt: Datetime
+  expoTicketId: String
+}
+
+"""All input for the `updateNotification` mutation."""
+input UpdateNotificationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: UUID!
+
+  """
+  An object where the defined keys will be set on the `Notification` being updated.
+  """
+  patch: NotificationPatch!
+}
+
 """The output of our update `Asset` mutation."""
 type UpdateAssetPayload {
   """
@@ -6187,6 +6706,57 @@ input DeleteAddressByNodeIdInput {
 
 """All input for the `deleteAddress` mutation."""
 input DeleteAddressInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: UUID!
+}
+
+"""The output of our delete `Notification` mutation."""
+type DeleteNotificationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Notification` that was deleted by this mutation."""
+  notification: Notification
+  deletedNotificationNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Notification`. May be used by Relay 1."""
+  notificationEdge(
+    """The method to use when ordering `Notification`."""
+    orderBy: [NotificationOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): NotificationEdge
+
+  """Reads a single `User` that is related to this `Notification`."""
+  user: User
+}
+
+"""All input for the `deleteNotificationByNodeId` mutation."""
+input DeleteNotificationByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Notification` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteNotification` mutation."""
+input DeleteNotificationInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
