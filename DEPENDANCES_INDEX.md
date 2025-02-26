@@ -109,6 +109,7 @@ ASW sdk S3, stockage de média (photo).
     "expo-status-bar": "~2.0.0",
     "expo-system-ui": "~4.0.3",
     "expo-web-browser": "~14.0.1",
+    "expo-calendar": "^14.0.6",
     "nativewind": "~4.0.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -151,6 +152,7 @@ Calendly : API de gestion de calendriers et rendez-vous sur Calendly. (Peppsy)
 i18n : internationalisation. (Peppsy)
 Apollo : librairy to implement security on API calls
 Algolia : moteur de recherche
+Expo calendar : gestion du calendrier device (Feder)
 
 ## site
 
