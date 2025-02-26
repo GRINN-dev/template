@@ -1,6 +1,7 @@
 import { run } from "graphile-worker";
 
 import { send_email } from "./tasks/send_email";
+import { send_notification } from "./tasks/send_notification";
 import { test_email } from "./tasks/test-react-email";
 import user__audit from "./tasks/user__audit";
 import user__forgot_password from "./tasks/user__forgot_password";
@@ -23,6 +24,7 @@ const main = async () => {
       user__send_delete_account_email,
       user_emails__send_verification,
       test_email,
+      send_notification,
     },
   });
   await runner.promise;

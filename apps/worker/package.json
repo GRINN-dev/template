@@ -11,18 +11,19 @@
   },
   "dependencies": {
     "@getbrevo/brevo": "2.2.0",
-    "graphile-worker": "^0.16.6",
     "@react-email/components": "0.0.32",
+    "expo-server-sdk": "^3.14.0",
+    "graphile-worker": "^0.16.6",
     "handlebars": "^4.7.8",
     "puppeteer": "^24.0.0"
   },
   "devDependencies": {
-    "tsup": "catalog:",
-    "typescript": "catalog:",
     "@grinn/eslint-config": "workspace:*",
     "@grinn/prettier-config": "workspace:*",
+    "@grinn/transactional": "workspace:*",
     "@grinn/tsconfig": "workspace:*",
-    "@grinn/transactional": "workspace:*"
+    "tsup": "catalog:",
+    "typescript": "catalog:"
   },
   "eslintConfig": {
     "root": true,

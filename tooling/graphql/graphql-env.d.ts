@@ -1,3 +1,5 @@
+import * as gqlTada from "gql.tada";
+
 /* eslint-disable */
 /* prettier-ignore */
 
@@ -249,7 +251,7 @@ export type introspection_types = {
     'UserFilter': { kind: 'INPUT_OBJECT'; name: 'UserFilter'; isOneOf: false; inputFields: [{ name: 'id'; type: { kind: 'INPUT_OBJECT'; name: 'UUIDFilter'; ofType: null; }; defaultValue: null }, { name: 'firstname'; type: { kind: 'INPUT_OBJECT'; name: 'StringFilter'; ofType: null; }; defaultValue: null }, { name: 'lastname'; type: { kind: 'INPUT_OBJECT'; name: 'StringFilter'; ofType: null; }; defaultValue: null }, { name: 'email'; type: { kind: 'INPUT_OBJECT'; name: 'StringFilter'; ofType: null; }; defaultValue: null }, { name: 'createdAt'; type: { kind: 'INPUT_OBJECT'; name: 'DatetimeFilter'; ofType: null; }; defaultValue: null }, { name: 'updatedAt'; type: { kind: 'INPUT_OBJECT'; name: 'DatetimeFilter'; ofType: null; }; defaultValue: null }, { name: 'userAuthentications'; type: { kind: 'INPUT_OBJECT'; name: 'UserToManyUserAuthenticationFilter'; ofType: null; }; defaultValue: null }, { name: 'userAuthenticationsExist'; type: { kind: 'SCALAR'; name: 'Boolean'; ofType: null; }; defaultValue: null }, { name: 'and'; type: { kind: 'LIST'; name: never; ofType: { kind: 'NON_NULL'; name: never; ofType: { kind: 'INPUT_OBJECT'; name: 'UserFilter'; ofType: null; }; }; }; defaultValue: null }, { name: 'or'; type: { kind: 'LIST'; name: never; ofType: { kind: 'NON_NULL'; name: never; ofType: { kind: 'INPUT_OBJECT'; name: 'UserFilter'; ofType: null; }; }; }; defaultValue: null }, { name: 'not'; type: { kind: 'INPUT_OBJECT'; name: 'UserFilter'; ofType: null; }; defaultValue: null }]; };
     'UserInput': { kind: 'INPUT_OBJECT'; name: 'UserInput'; isOneOf: false; inputFields: [{ name: 'firstname'; type: { kind: 'SCALAR'; name: 'String'; ofType: null; }; defaultValue: null }, { name: 'lastname'; type: { kind: 'SCALAR'; name: 'String'; ofType: null; }; defaultValue: null }, { name: 'email'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'String'; ofType: null; }; }; defaultValue: null }]; };
     'UserOrderBy': { name: 'UserOrderBy'; enumValues: 'NATURAL' | 'PRIMARY_KEY_ASC' | 'PRIMARY_KEY_DESC' | 'ROW_ID_ASC' | 'ROW_ID_DESC' | 'FIRSTNAME_ASC' | 'FIRSTNAME_DESC' | 'LASTNAME_ASC' | 'LASTNAME_DESC' | 'EMAIL_ASC' | 'EMAIL_DESC' | 'CREATED_AT_ASC' | 'CREATED_AT_DESC' | 'UPDATED_AT_ASC' | 'UPDATED_AT_DESC'; };
-    'UserPatch': { kind: 'INPUT_OBJECT'; name: 'UserPatch'; isOneOf: false; inputFields: [{ name: 'firstname'; type: { kind: 'SCALAR'; name: 'String'; ofType: null; }; defaultValue: null }, { name: 'lastname'; type: { kind: 'SCALAR'; name: 'String'; ofType: null; }; defaultValue: null }, { name: 'email'; type: { kind: 'SCALAR'; name: 'String'; ofType: null; }; defaultValue: null }, { name: 'avatarUrl'; type: { kind: 'SCALAR'; name: 'String'; ofType: null; }; defaultValue: null }]; };
+    'UserPatch': { kind: 'INPUT_OBJECT'; name: 'UserPatch'; isOneOf: false; inputFields: [{ name: 'firstname'; type: { kind: 'SCALAR'; name: 'String'; ofType: null; }; defaultValue: null }, { name: 'lastname'; type: { kind: 'SCALAR'; name: 'String'; ofType: null; }; defaultValue: null }, { name: 'email'; type: { kind: 'SCALAR'; name: 'String'; ofType: null; }; defaultValue: null }, { name: 'avatarUrl'; type: { kind: 'SCALAR'; name: 'String'; ofType: null; }; defaultValue: null }, { name: 'pushToken'; type: { kind: 'SCALAR'; name: 'String'; ofType: null; }; defaultValue: null }]; };
     'UserToManyUserAuthenticationFilter': { kind: 'INPUT_OBJECT'; name: 'UserToManyUserAuthenticationFilter'; isOneOf: false; inputFields: [{ name: 'every'; type: { kind: 'INPUT_OBJECT'; name: 'UserAuthenticationFilter'; ofType: null; }; defaultValue: null }, { name: 'some'; type: { kind: 'INPUT_OBJECT'; name: 'UserAuthenticationFilter'; ofType: null; }; defaultValue: null }, { name: 'none'; type: { kind: 'INPUT_OBJECT'; name: 'UserAuthenticationFilter'; ofType: null; }; defaultValue: null }]; };
     'Video': { kind: 'OBJECT'; name: 'Video'; fields: { 'archivedAt': { name: 'archivedAt'; type: { kind: 'SCALAR'; name: 'Datetime'; ofType: null; } }; 'createdAt': { name: 'createdAt'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'Datetime'; ofType: null; }; } }; 'durationInSeconds': { name: 'durationInSeconds'; type: { kind: 'SCALAR'; name: 'Int'; ofType: null; } }; 'id': { name: 'id'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'UUID'; ofType: null; }; } }; 'image': { name: 'image'; type: { kind: 'OBJECT'; name: 'Asset'; ofType: null; } }; 'imageId': { name: 'imageId'; type: { kind: 'SCALAR'; name: 'UUID'; ofType: null; } }; 'isATool': { name: 'isATool'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'Boolean'; ofType: null; }; } }; 'isExplicitlyArchived': { name: 'isExplicitlyArchived'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'Boolean'; ofType: null; }; } }; 'nodeId': { name: 'nodeId'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'ID'; ofType: null; }; } }; 'title': { name: 'title'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'String'; ofType: null; }; } }; 'transcript': { name: 'transcript'; type: { kind: 'SCALAR'; name: 'String'; ofType: null; } }; 'type': { name: 'type'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'ENUM'; name: 'ContentType'; ofType: null; }; } }; 'updatedAt': { name: 'updatedAt'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'Datetime'; ofType: null; }; } }; 'vimeoId': { name: 'vimeoId'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'String'; ofType: null; }; } }; }; };
     'VideoCondition': { kind: 'INPUT_OBJECT'; name: 'VideoCondition'; isOneOf: false; inputFields: [{ name: 'id'; type: { kind: 'SCALAR'; name: 'UUID'; ofType: null; }; defaultValue: null }, { name: 'type'; type: { kind: 'ENUM'; name: 'ContentType'; ofType: null; }; defaultValue: null }, { name: 'createdAt'; type: { kind: 'SCALAR'; name: 'Datetime'; ofType: null; }; defaultValue: null }, { name: 'updatedAt'; type: { kind: 'SCALAR'; name: 'Datetime'; ofType: null; }; defaultValue: null }, { name: 'isExplicitlyArchived'; type: { kind: 'SCALAR'; name: 'Boolean'; ofType: null; }; defaultValue: null }, { name: 'archivedAt'; type: { kind: 'SCALAR'; name: 'Datetime'; ofType: null; }; defaultValue: null }, { name: 'isATool'; type: { kind: 'SCALAR'; name: 'Boolean'; ofType: null; }; defaultValue: null }, { name: 'imageId'; type: { kind: 'SCALAR'; name: 'UUID'; ofType: null; }; defaultValue: null }]; };
@@ -269,16 +271,14 @@ export type introspection_types = {
  */
 export type introspection = {
   name: never;
-  query: 'Query';
-  mutation: 'Mutation';
+  query: "Query";
+  mutation: "Mutation";
   subscription: never;
   types: introspection_types;
 };
 
-import * as gqlTada from 'gql.tada';
-
-declare module 'gql.tada' {
+declare module "gql.tada" {
   interface setupSchema {
-    introspection: introspection
+    introspection: introspection;
   }
 }

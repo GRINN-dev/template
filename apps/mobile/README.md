@@ -53,9 +53,10 @@ Join our community of developers creating universal apps.
 
 ### Inclues
 
+- App initialiser (maj de version de current user, et optionellement tracking routage, notifs).
+- Notifs
+
 ### A ajouter
 
-- App initialiser (maj de version de current user, et optionellement tracking routage, notifs).
 - Sign in Apple/Google
-- Notifs
 - Écrans anonymous/login/register
