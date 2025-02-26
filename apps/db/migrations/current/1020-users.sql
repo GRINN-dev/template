@@ -21,6 +21,8 @@ create table publ.users (
   avatar_url text check(avatar_url ~ '^https?://[^/]+'),
   is_admin boolean not null default false,
   is_verified boolean not null default false,
+  push_token text,
+  app_version integer,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -37,6 +39,10 @@ comment on column publ.users.avatar_url is
   E'Optional avatar URL.';
 comment on column publ.users.is_admin is
   E'If true, the user has elevated privileges.';
+comment on column publ.users.app_version is
+  E'The version of the app the user is using.';
+comment on column publ.users.push_token is
+  E'The expo push token for the user.';
 
 -- We couldn't implement this relationship on the sessions table until the users table existed!
 alter table priv.sessions
@@ -47,6 +53,10 @@ alter table priv.sessions
 create index on publ.users(firstname);
 create index on publ.users(lastname);
 create index on publ.users(email);
+create index on publ.users(is_admin);
+create index on publ.users(is_verified);
+create index on publ.users(push_token);
+create index on publ.users(app_version);
 create index on publ.users(created_at);
 create index on publ.users(updated_at);
 

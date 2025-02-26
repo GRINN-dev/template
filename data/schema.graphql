@@ -1176,17 +1176,17 @@ type Query implements Node {
   """Get a single `BlogPost`."""
   blogPostBySlug(slug: String!): BlogPost
 
-  """Get a single `User`."""
-  user(id: UUID!): User
-
-  """Get a single `User`."""
-  userByEmail(email: String!): User
-
   """Get a single `City`."""
   city(id: UUID!): City
 
   """Get a single `Address`."""
   address(id: UUID!): Address
+
+  """Get a single `User`."""
+  user(id: UUID!): User
+
+  """Get a single `User`."""
+  userByEmail(email: String!): User
 
   """Get a single `Asset`."""
   asset(id: UUID!): Asset
@@ -1272,12 +1272,6 @@ type Query implements Node {
     nodeId: ID!
   ): BlogPost
 
-  """Reads a single `User` using its globally unique `ID`."""
-  userByNodeId(
-    """The globally unique `ID` to be used in selecting a single `User`."""
-    nodeId: ID!
-  ): User
-
   """Reads a single `City` using its globally unique `ID`."""
   cityByNodeId(
     """The globally unique `ID` to be used in selecting a single `City`."""
@@ -1289,6 +1283,12 @@ type Query implements Node {
     """The globally unique `ID` to be used in selecting a single `Address`."""
     nodeId: ID!
   ): Address
+
+  """Reads a single `User` using its globally unique `ID`."""
+  userByNodeId(
+    """The globally unique `ID` to be used in selecting a single `User`."""
+    nodeId: ID!
+  ): User
 
   """Reads a single `Asset` using its globally unique `ID`."""
   assetByNodeId(
@@ -1670,40 +1670,6 @@ type Query implements Node {
     filter: BlogPostFilter
   ): BlogPostConnection
 
-  """Reads and enables pagination through a set of `User`."""
-  users(
-    """Only read the first `n` values of the set."""
-    first: Int
-
-    """Only read the last `n` values of the set."""
-    last: Int
-
-    """
-    Skip the first `n` values from our `after` cursor, an alternative to cursor
-    based pagination. May not be used with `last`.
-    """
-    offset: Int
-
-    """Read all values in the set before (above) this cursor."""
-    before: Cursor
-
-    """Read all values in the set after (below) this cursor."""
-    after: Cursor
-
-    """The method to use when ordering `User`."""
-    orderBy: [UserOrderBy!] = [PRIMARY_KEY_ASC]
-
-    """
-    A condition to be used in determining which values should be returned by the collection.
-    """
-    condition: UserCondition
-
-    """
-    A filter to be used in determining which values should be returned by the collection.
-    """
-    filter: UserFilter
-  ): UserConnection
-
   """Reads and enables pagination through a set of `City`."""
   cities(
     """Only read the first `n` values of the set."""
@@ -1771,6 +1737,40 @@ type Query implements Node {
     """
     filter: AddressFilter
   ): AddressConnection
+
+  """Reads and enables pagination through a set of `User`."""
+  users(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `User`."""
+    orderBy: [UserOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: UserCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: UserFilter
+  ): UserConnection
 
   """Reads and enables pagination through a set of `Content`."""
   contents(
@@ -1993,6 +1993,12 @@ type User implements Node {
   """If true, the user has elevated privileges."""
   isAdmin: Boolean!
   isVerified: Boolean!
+
+  """The expo push token for the user."""
+  pushToken: String
+
+  """The version of the app the user is using."""
+  appVersion: Int
   createdAt: Datetime!
   updatedAt: Datetime!
 
@@ -2129,6 +2135,18 @@ input UserFilter {
   """Filter by the object’s `email` field."""
   email: StringFilter
 
+  """Filter by the object’s `isAdmin` field."""
+  isAdmin: BooleanFilter
+
+  """Filter by the object’s `isVerified` field."""
+  isVerified: BooleanFilter
+
+  """Filter by the object’s `pushToken` field."""
+  pushToken: StringFilter
+
+  """Filter by the object’s `appVersion` field."""
+  appVersion: IntFilter
+
   """Filter by the object’s `createdAt` field."""
   createdAt: DatetimeFilter
 
@@ -2149,6 +2167,48 @@ input UserFilter {
 
   """Negates the expression."""
   not: UserFilter
+}
+
+"""
+A filter to be used against Int fields. All fields are combined with a logical ‘and.’
+"""
+input IntFilter {
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Equal to the specified value."""
+  equalTo: Int
+
+  """Not equal to the specified value."""
+  notEqualTo: Int
+
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: Int
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: Int
+
+  """Included in the specified list."""
+  in: [Int!]
+
+  """Not included in the specified list."""
+  notIn: [Int!]
+
+  """Less than the specified value."""
+  lessThan: Int
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: Int
+
+  """Greater than the specified value."""
+  greaterThan: Int
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: Int
 }
 
 """
@@ -3134,74 +3194,6 @@ input BlogPostStatusFilter {
   greaterThanOrEqualTo: BlogPostStatus
 }
 
-"""A connection to a list of `User` values."""
-type UserConnection {
-  """A list of `User` objects."""
-  nodes: [User]!
-
-  """
-  A list of edges which contains the `User` and cursor to aid in pagination.
-  """
-  edges: [UserEdge]!
-
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """The count of *all* `User` you could get from the connection."""
-  totalCount: Int!
-}
-
-"""A `User` edge in the connection."""
-type UserEdge {
-  """A cursor for use in pagination."""
-  cursor: Cursor
-
-  """The `User` at the end of the edge."""
-  node: User
-}
-
-"""Methods to use when ordering `User`."""
-enum UserOrderBy {
-  NATURAL
-  PRIMARY_KEY_ASC
-  PRIMARY_KEY_DESC
-  ROW_ID_ASC
-  ROW_ID_DESC
-  FIRSTNAME_ASC
-  FIRSTNAME_DESC
-  LASTNAME_ASC
-  LASTNAME_DESC
-  EMAIL_ASC
-  EMAIL_DESC
-  CREATED_AT_ASC
-  CREATED_AT_DESC
-  UPDATED_AT_ASC
-  UPDATED_AT_DESC
-}
-
-"""
-A condition to be used against `User` object types. All fields are tested for equality and combined with a logical ‘and.’
-"""
-input UserCondition {
-  """Checks for equality with the object’s `id` field."""
-  id: UUID
-
-  """Checks for equality with the object’s `firstname` field."""
-  firstname: String
-
-  """Checks for equality with the object’s `lastname` field."""
-  lastname: String
-
-  """Checks for equality with the object’s `email` field."""
-  email: String
-
-  """Checks for equality with the object’s `createdAt` field."""
-  createdAt: Datetime
-
-  """Checks for equality with the object’s `updatedAt` field."""
-  updatedAt: Datetime
-}
-
 """A connection to a list of `City` values."""
 type CityConnection {
   """A list of `City` objects."""
@@ -3392,6 +3384,94 @@ input AddressFilter {
   not: AddressFilter
 }
 
+"""A connection to a list of `User` values."""
+type UserConnection {
+  """A list of `User` objects."""
+  nodes: [User]!
+
+  """
+  A list of edges which contains the `User` and cursor to aid in pagination.
+  """
+  edges: [UserEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `User` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `User` edge in the connection."""
+type UserEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `User` at the end of the edge."""
+  node: User
+}
+
+"""Methods to use when ordering `User`."""
+enum UserOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  FIRSTNAME_ASC
+  FIRSTNAME_DESC
+  LASTNAME_ASC
+  LASTNAME_DESC
+  EMAIL_ASC
+  EMAIL_DESC
+  IS_ADMIN_ASC
+  IS_ADMIN_DESC
+  IS_VERIFIED_ASC
+  IS_VERIFIED_DESC
+  PUSH_TOKEN_ASC
+  PUSH_TOKEN_DESC
+  APP_VERSION_ASC
+  APP_VERSION_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+}
+
+"""
+A condition to be used against `User` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input UserCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `firstname` field."""
+  firstname: String
+
+  """Checks for equality with the object’s `lastname` field."""
+  lastname: String
+
+  """Checks for equality with the object’s `email` field."""
+  email: String
+
+  """Checks for equality with the object’s `isAdmin` field."""
+  isAdmin: Boolean
+
+  """Checks for equality with the object’s `isVerified` field."""
+  isVerified: Boolean
+
+  """Checks for equality with the object’s `pushToken` field."""
+  pushToken: String
+
+  """Checks for equality with the object’s `appVersion` field."""
+  appVersion: Int
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+}
+
 """
 The root mutation type which contains root level fields which mutate data.
 """
@@ -3500,14 +3580,6 @@ type Mutation {
     input: CreateBlogPostInput!
   ): CreateBlogPostPayload
 
-  """Creates a single `User`."""
-  createUser(
-    """
-    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
-    """
-    input: CreateUserInput!
-  ): CreateUserPayload
-
   """Creates a single `City`."""
   createCity(
     """
@@ -3523,6 +3595,14 @@ type Mutation {
     """
     input: CreateAddressInput!
   ): CreateAddressPayload
+
+  """Creates a single `User`."""
+  createUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateUserInput!
+  ): CreateUserPayload
 
   """Creates a single `Asset`."""
   createAsset(
@@ -3670,30 +3750,6 @@ type Mutation {
     input: UpdateBlogPostBySlugInput!
   ): UpdateBlogPostPayload
 
-  """Updates a single `User` using its globally unique id and a patch."""
-  updateUserByNodeId(
-    """
-    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
-    """
-    input: UpdateUserByNodeIdInput!
-  ): UpdateUserPayload
-
-  """Updates a single `User` using a unique key and a patch."""
-  updateUser(
-    """
-    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
-    """
-    input: UpdateUserInput!
-  ): UpdateUserPayload
-
-  """Updates a single `User` using a unique key and a patch."""
-  updateUserByEmail(
-    """
-    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
-    """
-    input: UpdateUserByEmailInput!
-  ): UpdateUserPayload
-
   """Updates a single `City` using its globally unique id and a patch."""
   updateCityByNodeId(
     """
@@ -3725,6 +3781,30 @@ type Mutation {
     """
     input: UpdateAddressInput!
   ): UpdateAddressPayload
+
+  """Updates a single `User` using its globally unique id and a patch."""
+  updateUserByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateUserByNodeIdInput!
+  ): UpdateUserPayload
+
+  """Updates a single `User` using a unique key and a patch."""
+  updateUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateUserInput!
+  ): UpdateUserPayload
+
+  """Updates a single `User` using a unique key and a patch."""
+  updateUserByEmail(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateUserByEmailInput!
+  ): UpdateUserPayload
 
   """Updates a single `Asset` using its globally unique id and a patch."""
   updateAssetByNodeId(
@@ -4461,50 +4541,6 @@ input BlogPostInput {
   publishedAt: Datetime
 }
 
-"""The output of our create `User` mutation."""
-type CreateUserPayload {
-  """
-  The exact same `clientMutationId` that was provided in the mutation input,
-  unchanged and unused. May be used by a client to track mutations.
-  """
-  clientMutationId: String
-
-  """The `User` that was created by this mutation."""
-  user: User
-
-  """
-  Our root query field type. Allows us to run any query from our mutation payload.
-  """
-  query: Query
-
-  """An edge for our `User`. May be used by Relay 1."""
-  userEdge(
-    """The method to use when ordering `User`."""
-    orderBy: [UserOrderBy!]! = [PRIMARY_KEY_ASC]
-  ): UserEdge
-}
-
-"""All input for the create `User` mutation."""
-input CreateUserInput {
-  """
-  An arbitrary string value with no semantic meaning. Will be included in the
-  payload verbatim. May be used to track mutations by the client.
-  """
-  clientMutationId: String
-
-  """The `User` to be created by this mutation."""
-  user: UserInput!
-}
-
-"""An input for mutations affecting `User`"""
-input UserInput {
-  firstname: String
-  lastname: String
-
-  """The users email address, in `a@b.c` format."""
-  email: String!
-}
-
 """The output of our create `City` mutation."""
 type CreateCityPayload {
   """
@@ -4599,6 +4635,50 @@ input AddressInput {
   longitude: Float!
   cityId: UUID!
   formattedAddress: String!
+}
+
+"""The output of our create `User` mutation."""
+type CreateUserPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `User` that was created by this mutation."""
+  user: User
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `User`. May be used by Relay 1."""
+  userEdge(
+    """The method to use when ordering `User`."""
+    orderBy: [UserOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): UserEdge
+}
+
+"""All input for the create `User` mutation."""
+input CreateUserInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `User` to be created by this mutation."""
+  user: UserInput!
+}
+
+"""An input for mutations affecting `User`"""
+input UserInput {
+  firstname: String
+  lastname: String
+
+  """The users email address, in `a@b.c` format."""
+  email: String!
 }
 
 """The output of our create `Asset` mutation."""
@@ -5220,94 +5300,6 @@ input UpdateBlogPostBySlugInput {
   patch: BlogPostPatch!
 }
 
-"""The output of our update `User` mutation."""
-type UpdateUserPayload {
-  """
-  The exact same `clientMutationId` that was provided in the mutation input,
-  unchanged and unused. May be used by a client to track mutations.
-  """
-  clientMutationId: String
-
-  """The `User` that was updated by this mutation."""
-  user: User
-
-  """
-  Our root query field type. Allows us to run any query from our mutation payload.
-  """
-  query: Query
-
-  """An edge for our `User`. May be used by Relay 1."""
-  userEdge(
-    """The method to use when ordering `User`."""
-    orderBy: [UserOrderBy!]! = [PRIMARY_KEY_ASC]
-  ): UserEdge
-}
-
-"""All input for the `updateUserByNodeId` mutation."""
-input UpdateUserByNodeIdInput {
-  """
-  An arbitrary string value with no semantic meaning. Will be included in the
-  payload verbatim. May be used to track mutations by the client.
-  """
-  clientMutationId: String
-
-  """
-  The globally unique `ID` which will identify a single `User` to be updated.
-  """
-  nodeId: ID!
-
-  """
-  An object where the defined keys will be set on the `User` being updated.
-  """
-  patch: UserPatch!
-}
-
-"""Represents an update to a `User`. Fields that are set will be updated."""
-input UserPatch {
-  firstname: String
-  lastname: String
-
-  """The users email address, in `a@b.c` format."""
-  email: String
-
-  """Optional avatar URL."""
-  avatarUrl: String
-}
-
-"""All input for the `updateUser` mutation."""
-input UpdateUserInput {
-  """
-  An arbitrary string value with no semantic meaning. Will be included in the
-  payload verbatim. May be used to track mutations by the client.
-  """
-  clientMutationId: String
-
-  """Unique identifier for the user."""
-  id: UUID!
-
-  """
-  An object where the defined keys will be set on the `User` being updated.
-  """
-  patch: UserPatch!
-}
-
-"""All input for the `updateUserByEmail` mutation."""
-input UpdateUserByEmailInput {
-  """
-  An arbitrary string value with no semantic meaning. Will be included in the
-  payload verbatim. May be used to track mutations by the client.
-  """
-  clientMutationId: String
-
-  """The users email address, in `a@b.c` format."""
-  email: String!
-
-  """
-  An object where the defined keys will be set on the `User` being updated.
-  """
-  patch: UserPatch!
-}
-
 """The output of our update `City` mutation."""
 type UpdateCityPayload {
   """
@@ -5448,6 +5440,100 @@ input UpdateAddressInput {
   An object where the defined keys will be set on the `Address` being updated.
   """
   patch: AddressPatch!
+}
+
+"""The output of our update `User` mutation."""
+type UpdateUserPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `User` that was updated by this mutation."""
+  user: User
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `User`. May be used by Relay 1."""
+  userEdge(
+    """The method to use when ordering `User`."""
+    orderBy: [UserOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): UserEdge
+}
+
+"""All input for the `updateUserByNodeId` mutation."""
+input UpdateUserByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `User` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `User` being updated.
+  """
+  patch: UserPatch!
+}
+
+"""Represents an update to a `User`. Fields that are set will be updated."""
+input UserPatch {
+  firstname: String
+  lastname: String
+
+  """The users email address, in `a@b.c` format."""
+  email: String
+
+  """Optional avatar URL."""
+  avatarUrl: String
+
+  """The expo push token for the user."""
+  pushToken: String
+
+  """The version of the app the user is using."""
+  appVersion: Int
+}
+
+"""All input for the `updateUser` mutation."""
+input UpdateUserInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """Unique identifier for the user."""
+  id: UUID!
+
+  """
+  An object where the defined keys will be set on the `User` being updated.
+  """
+  patch: UserPatch!
+}
+
+"""All input for the `updateUserByEmail` mutation."""
+input UpdateUserByEmailInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The users email address, in `a@b.c` format."""
+  email: String!
+
+  """
+  An object where the defined keys will be set on the `User` being updated.
+  """
+  patch: UserPatch!
 }
 
 """The output of our update `Asset` mutation."""
