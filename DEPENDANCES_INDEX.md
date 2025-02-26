@@ -149,11 +149,12 @@ ASW sdk S3, stockage de média (photo).
 ```
 
 Expo : Framework for native application, for development and delivery.
+Expo calendar : gestion du calendrier device (Feder)
+Expo contacts: utilisation des contacts téléphone (Feder)
 Calendly : API de gestion de calendriers et rendez-vous sur Calendly. (Peppsy)
 i18n : internationalisation. (Peppsy)
 Apollo : librairy to implement security on API calls
 Algolia : moteur de recherche
-Expo calendar : gestion du calendrier device (Feder)
 React Native maps (Feder)
 
 ## site
