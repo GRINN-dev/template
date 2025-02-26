@@ -119,6 +119,7 @@ ASW sdk S3, stockage de média (photo).
     "react-native-safe-area-context": "4.12.0",
     "react-native-screens": "4.1.0",
     "react-native-svg": "15.8.0",
+    "react-native-maps": "^1.20.1",
     "react-native-svg-transformer": "^1.4.0",
     "react-native-web": "~0.19.10",
     "react-calendly": "^4.3.0",
@@ -153,6 +154,7 @@ i18n : internationalisation. (Peppsy)
 Apollo : librairy to implement security on API calls
 Algolia : moteur de recherche
 Expo calendar : gestion du calendrier device (Feder)
+React Native maps (Feder)
 
 ## site
 
