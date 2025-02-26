@@ -48,3 +48,14 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Features mobiles
+
+### Inclues
+
+### A ajouter
+
+- App initialiser (maj de version de current user, et optionellement tracking routage, notifs).
+- Sign in Apple/Google
+- Notifs
+- Écrans anonymous/login/register
