@@ -1,0 +1,3 @@
+{
+  "sha256:dc3c8cd3f82fde6e497f8a0d556945958449f052964375d91ce24fdcbd64f282": "query CurrentUser {\n  currentUser {\n    id\n    email\n    firstname\n    lastname\n    phoneNumber\n    notificationResponseDate\n    avatarUrl\n    avatarColor\n    gender\n    profileValidated\n    isPhoneCodeUsed\n    pushToken\n    appVersion\n    userContacts {\n      totalCount\n    }\n    preRegisteredContactsByInviterId {\n      totalCount\n    }\n  }\n}"
+}

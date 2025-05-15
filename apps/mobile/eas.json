@@ -1,0 +1,59 @@
+{
+  "cli": {
+    "version": ">= 14.7.1",
+    "appVersionSource": "local"
+  },
+  "build": {
+    "base": {
+      "node": "20.18.1",
+      "ios": {
+        "resourceClass": "m-medium"
+      }
+    },
+    "development": {
+      "extends": "base",
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "extends": "base",
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_APP_VARIANT": "staging",
+        "EXPO_PUBLIC_API_URL": "https://app-346344ab-1e33-40c3-ae72-a8de6b84c32a.cleverapps.io"
+      }
+    },
+    "staging": {
+      "extends": "base",
+      "environment": "preview",
+      "env": {
+        "EXPO_PUBLIC_APP_VARIANT": "staging",
+        "EXPO_PUBLIC_API_URL": "https://app-346344ab-1e33-40c3-ae72-a8de6b84c32a.cleverapps.io"
+      },
+      "android": {
+        "image": "latest"
+      },
+      "ios": {
+        "image": "latest"
+      }
+    },
+    "production": {
+      // "autoIncrement": true
+      "extends": "base",
+      "env": {
+        "EXPO_PUBLIC_APP_VARIANT": "production",
+        "EXPO_PUBLIC_API_URL": "https://app-a043887c-8d98-44b8-b1c9-5f1e89752306.cleverapps.io"
+      },
+      "android": {
+        "image": "latest"
+      },
+      "ios": {
+        "image": "latest"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
