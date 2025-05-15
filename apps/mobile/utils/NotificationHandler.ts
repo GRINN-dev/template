@@ -23,8 +23,8 @@ export const registerForPushNotificationsAsync = async () => {
     ).data;
 
     if (Platform.OS === "android") {
-      Notifications.setNotificationChannelAsync("lgt", {
-        name: "lgt",
+      Notifications.setNotificationChannelAsync("feder", {
+        name: "feder",
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 250, 250],
         lightColor: "#FF231F7C",

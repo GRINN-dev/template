@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import * as Notifications from "expo-notifications";
-import { router } from "expo-router";
+import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import { useMutation, useQuery } from "@apollo/client";
+import { PostHogProvider, usePostHog } from "posthog-react-native";
 
-import { graphql } from "@grinn/graphql";
-
-import Config from "@/constants/Configs";
-import { registerForPushNotificationsAsync } from "@/utils/NotificationHandler";
+import Config from "@/constants/Config";
+import { CurrentUserQuery } from "@/graphql/current-user";
+import { UpdateNotification } from "@/graphql/mutations/other";
+import { UpdateUserMutation } from "@/graphql/mutations/user";
+import { registerForPushNotificationsAsync } from "@/utils/notificationHandler";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -16,21 +18,15 @@ Notifications.setNotificationHandler({
   }),
 });
 
-/**
- * composant créé à l'initialisation de l'application pour gérer les notifications et la version de l'application
- * peut inclure un hook sur le pathname pour faire du tracking
- */
 export function AppInitialiserNotifAndVersion({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [markAsRead] = useMutation(UpdateNotification);
-  const [updateUser] = useMutation(UpdateUser);
+  const [updateUser] = useMutation(UpdateUserMutation);
 
-  const { data } = useQuery(CurrentUserQuery, {
-    fetchPolicy: "cache-and-network",
-  });
+  const { data } = useQuery(CurrentUserQuery);
 
   React.useEffect(() => {
     if (!data) return;
@@ -50,6 +46,9 @@ export function AppInitialiserNotifAndVersion({
         markAsRead({
           variables: {
             id: response.notification.request.content.data?.id,
+            patch: {
+              status: "READ",
+            },
           },
         });
       }
@@ -78,6 +77,8 @@ export function AppInitialiserNotifAndVersion({
 
       const updatePatch: {
         pushToken?: string;
+        isNotificationOk?: boolean;
+        notificationResponseDate?: Date;
         appVersion?: number;
       } = {};
 
@@ -85,6 +86,8 @@ export function AppInitialiserNotifAndVersion({
       const pushToken = await registerForPushNotificationsAsync();
       if (pushToken && pushToken !== currentUser.pushToken) {
         updatePatch.pushToken = pushToken;
+        updatePatch.isNotificationOk = true;
+        updatePatch.notificationResponseDate = new Date();
       }
 
       // Handle app version update if necessary
@@ -112,31 +115,35 @@ export function AppInitialiserNotifAndVersion({
     };
   }, [data]);
 
-  return <>{children}</>;
+  return (
+    <>
+      <PostHogProvider
+        apiKey="phc_xqi159ZLZor0uWPOgJCcUZrmhluDhEEpyXaC4CFdwwQ"
+        options={{
+          host: "https://eu.i.posthog.com",
+          disabled: !Config.IS_PROD,
+        }}
+        // autocapture
+      >
+        <PostHogTracker />
+        {children}
+      </PostHogProvider>
+    </>
+  );
 }
 
-const CurrentUserQuery = graphql(`
-  query CurrentUserQuery {
-    currentUser {
-      id
-      pushToken
-      appVersion
-    }
-  }
-`);
+const PostHogTracker = () => {
+  const pathname = usePathname();
+  const params = useGlobalSearchParams();
+  const posthog = usePostHog();
 
-const UpdateNotification = graphql(`
-  mutation UpdateNotification($id: UUID!) {
-    updateNotification(input: { id: $id, patch: { read: true } }) {
-      clientMutationId
-    }
-  }
-`);
+  useEffect(() => {
+    if (!posthog) return;
+    posthog.capture("Pageview", {
+      $pathname: pathname,
+      properties: { pathname: pathname, params: params },
+    });
+  }, [pathname, params]);
 
-const UpdateUser = graphql(`
-  mutation UpdateUser($input: UpdateUserInput!) {
-    updateUser(input: $input) {
-      clientMutationId
-    }
-  }
-`);
+  return null;
+};

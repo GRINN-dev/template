@@ -39,3 +39,6 @@ app-example
 
 ios/
 android/
+
+# conf google services
+*assets/google-service*
